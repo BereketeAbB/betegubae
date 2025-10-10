@@ -135,12 +135,12 @@
       transition: all 0.3s ease;
     }
 
-    .completion-checkbox input:checked + .checkmark {
+    .completion-checkbox input:checked+.checkmark {
       background-color: #2ecc71;
       border-color: #2ecc71;
     }
 
-    .completion-checkbox input:checked + .checkmark::after {
+    .completion-checkbox input:checked+.checkmark::after {
       content: "✓";
       color: white;
       font-weight: bold;
@@ -600,6 +600,27 @@
       margin: 10px 0;
       color: #7f8c8d;
     }
+
+    /* Navigation link styling */
+    .nav-link {
+      display: flex;
+      justify-content: flex-end;
+      margin: 10px 0 20px;
+    }
+
+    .nav-link a {
+      background-color: #3498db;
+      color: white;
+      padding: 7px 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-link a:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 
@@ -607,6 +628,10 @@
 
   <h2>ውዳሴ ማርያም ዘሰኑይ</h2>
 
+  <!-- Add this right after the <h2> tag -->
+  <div class="nav-link">
+    <a href="letters.html">ፊደላት</a>
+  </div>
   <!-- Progress tracker -->
   <div class="progress-tracker">
     <div class="progress-header">
@@ -673,14 +698,14 @@
           {
             key: "ዘሠኑይ",
             data: [
-              { time: 1.14, end: 1.18,  text: "(ፈ)[፴](ቀ)[^](ደ)" },
-              { time: 1.18, end: 1.28,  text: "እግ(ዚ)[,](እ)[ረዩ]" },
-              { time: 1.29, end: 1.34,  text: "(ያ)[V]ግ(ዕ)[፡](ዞ)[ምን]" },
-              { time: 1.35, end: 1.39,  text: "(ለ)[,^]አ(ዳ)[,](ም)[ቀ]" },
-              { time: 1.40, end: 1.47,  text: "(ኅ)[V]ዙ(ነ)[.] ወትኩዘ (ልብ)[ረዩ]" },
-              { time: 1.47, end: 1.50,  text: "ወያግ(ብ)[.](ኦ)[ለኪ]" },
-              { time: 1.50, end: 1.54,  text: "ኀበ (ዘ)[V]ት(ካ)[,^]ት" },
-              { time: 1.55, end: 1.58,  text: "መን(በ)[፴](ሩ)[ሮን]" },
+              { time: 1.14, end: 1.18, text: "(ፈ)[፴](ቀ)[^](ደ)" },
+              { time: 1.18, end: 1.28, text: "እግ(ዚ)[,](እ)[ረዩ]" },
+              { time: 1.29, end: 1.34, text: "(ያ)[V]ግ(ዕ)[፡](ዞ)[ምን]" },
+              { time: 1.35, end: 1.39, text: "(ለ)[,^]አ(ዳ)[,](ም)[ቀ]" },
+              { time: 1.40, end: 1.47, text: "(ኅ)[V]ዙ(ነ)[.] ወትኩዘ (ልብ)[ረዩ]" },
+              { time: 1.47, end: 1.50, text: "ወያግ(ብ)[.](ኦ)[ለኪ]" },
+              { time: 1.50, end: 1.54, text: "ኀበ (ዘ)[V]ት(ካ)[,^]ት" },
+              { time: 1.55, end: 1.58, text: "መን(በ)[፴](ሩ)[ሮን]" },
               { time: 1.58, end: 2.02, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" }
             ]
           },
@@ -782,7 +807,7 @@
         title: "ውዳሴ ማርያም ዘሰኑይ",
         audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
         lyricsTimestamp: [
-        {
+          {
             key: "ለሔዋን",
             data: [
               { time: 2.03, end: 2.10, text: "ሠ(ረ)[,](ቀ)[ቀ] በ(ሥ)[V](ጋ)[ሠም]" },
@@ -834,7 +859,7 @@
                   }
                 ]
               },
-                            {
+              {
                 reading: {
                   am: "ከድንግል ያለ ወንድ ዘር በሥጋ ተወለደና አዳነን።",
                   en: "",
@@ -870,7 +895,7 @@
         title: "ውዳሴ ማርያም ዘሰኑይ",
         audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
         lyricsTimestamp: [
-                    {
+          {
             key: "ኢየሱስ",
             data: [
               { time: 3.48, end: 3.55, text: "ኢ(የ)[ዓይ](ሱ)[^](ስ)[ንቲ] ክርስ(ቶስ)[ውእ]" },
@@ -926,7 +951,7 @@
         title: "ውዳሴ ማርያም ዘሰኑይ",
         audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
         lyricsTimestamp: [
-    {
+          {
             key: "ርእየ",
             data: [
               { time: 4.48, end: 4.56, text: "(ርእ)[ኮን](የ)[ኪ]" },
@@ -979,14 +1004,14 @@
           }
         ]
       },
-    {
+      {
         title: "ውዳሴ ማርያም ዘሰኑይ",
         audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
         lyricsTimestamp: [
           {
             key: "ተፈሣሕ",
             data: [
-              { time: 5.58, end: 6.08,  text: "(ተ)[V](ፈ)[ለሔ](ሣ)[,](ሕ)[ዋን]" },
+              { time: 5.58, end: 6.08, text: "(ተ)[V](ፈ)[ለሔ](ሣ)[,](ሕ)[ዋን]" },
               { time: 6.08, end: 6.13, text: "(ወ)[፴]ተ(ሐ)[,^](ሠ)[,](ይ)[ሴፍ]" },
               { time: 6.14, end: 6.20, text: "(ኦ)[~] ዘመደ ዕጓለ እመ ሕያው" },
               { time: 6.21, end: 6.27, text: "እስመ አፍቀ(ሮ)[ሰአ] እግዚ(አ)[,^]ብ(ሔ)[•](ር)[ዴ]" },
@@ -1004,7 +1029,7 @@
           {
             key: "ኀለፈ ክረምት",
             data: [
-              { time: 5.58, end: 6.08,  text: "ኀ(ለ)[^](ፈ)[,፡] ክረም(ት)[ለኪ]" },
+              { time: 5.58, end: 6.08, text: "ኀ(ለ)[^](ፈ)[,፡] ክረም(ት)[ለኪ]" },
               { time: 6.08, end: 6.13, text: "(ቆ)[,^](መ)[V] በረከት" },
               { time: 6.13, end: 6.20, text: "ተሠር(ገ)[^](ወ)[V] (ም)[ቤዛነ]ድር (በ)[V]ስነ" },
               { time: 6.21, end: 6.27, text: "(ጽ)[^]ጌያ(ት)[ር] ለ(መ)[ብበ]ር(ዓ)[,]ዊ(ሃ)[፴]" },
@@ -1136,8 +1161,8 @@
       // Update completion text
       document.getElementById("completion-text").textContent =
         pageCompletedCheckbox.checked ?
-        "ይህ ገጽ ተጠናቅቋል" :
-        "ይህን ገጽ እንደ ተጠናቀቀ ምልክት ያድርጉ";
+          "ይህ ገጽ ተጠናቅቋል" :
+          "ይህን ገጽ እንደ ተጠናቀቀ ምልክት ያድርጉ";
 
       // Render lyrics and translations
       renderLyrics(page.lyricsTimestamp);
@@ -1176,8 +1201,8 @@
       // Update completion text
       document.getElementById("completion-text").textContent =
         pageCompletedCheckbox.checked ?
-        "ይህ ገጽ ተጠናቅቋል" :
-        "ይህን ገጽ እንደ ተጠናቀቀ ምልክት ያድርጉ";
+          "ይህ ገጽ ተጠናቅቋል" :
+          "ይህን ገጽ እንደ ተጠናቀቀ ምልክት ያድርጉ";
 
       updateProgressTracker();
     }
@@ -1420,7 +1445,7 @@
         });
 
         // Add event listener for play button
-        playButton.addEventListener("click", function(e) {
+        playButton.addEventListener("click", function (e) {
           e.stopPropagation();
           playEntireVerse(groupIndex);
         });
