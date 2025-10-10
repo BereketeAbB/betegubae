@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amharic Letter Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .welcome-screen,
+        .selection-screen,
+        .learning-screen {
+            text-align: center;
+        }
+
+        .welcome-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .welcome-screen p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+        }
+
+        .selection-screen {
+            display: none;
+        }
+
+        .selection-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .selection-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            border-color: #3498db;
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .option-letters {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .option-desc {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .learning-screen {
+            display: none;
+        }
+
+        .learning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .learning-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        .letters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .letter-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .letter-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+        }
+
+        .letter {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .letter-sound {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .recording-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .recording-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .recording-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .recording-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .recording-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .recording-btn.stop {
+            background: #e74c3c;
+        }
+
+        .recording-btn.stop:hover {
+            background: #c0392b;
+        }
+
+        .recording-status {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+
+        .recording-visualizer {
+            height: 40px;
+            width: 100%;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .visualizer-bar {
+            position: absolute;
+            bottom: 0;
+            width: 5px;
+            background: #3498db;
+            border-radius: 2px 2px 0 0;
+            transition: height 0.1s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalAppear 0.3s ease;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #e74c3c;
+        }
+
+        .modal-letter {
+            font-size: 4rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        .meaning-section {
+            margin-top: 20px;
+        }
+
+        .meaning-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meaning-lang {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .meaning-text {
+            line-height: 1.5;
+        }
+
+        .play-sound {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto 0;
+            transition: all 0.3s ease;
+        }
+
+        .play-sound:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .letter-card {
+                width: 80px;
+            }
+
+            .letter {
+                font-size: 2.5rem;
+            }
+
+            .selection-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .option-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>መምህረ ፊደላት ዘግእዝ</h1>
+            <p class="subtitle">ናእምር ልሳነ ግእዝ</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <h2>ትምህርተ ፊደላት - የፊደሎች ትምህርት</h2>
+                <button class="btn" id="startLearningBtn">ወጥን - ጀምር</button>
+            </div>
+
+            <!-- Selection Screen -->
+            <div class="selection-screen" id="selectionScreen">
+                <h2>ኅረይ</h2>
+                <div class="selection-options">
+                    <div class="option-card" data-sequence="0">
+                        <div class="option-title">ሀለሐመ</div>
+                        <div class="option-letters">ሀሁሂሃህሄሆ</div>
+                        <p class="option-desc">.</p>
+                    </div>
+                    <div class="option-card" data-sequence="1">
+                        <div class="option-title">አቡጉዳ</div>
+                        <div class="option-letters">አቡጊዳሄውዞ</div>
+                        <p class="option-desc">.</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" id="backToWelcomeBtn">ተመየጥ - ጀምር</button>
+            </div>
+
+            <!-- Learning Screen -->
+            <div class="learning-screen" id="learningScreen">
+                <div class="learning-header">
+                    <h2 class="learning-title" id="learningTitle">ትምህርተ ፊደላት  - የፊደሎች ትምህርት</h2>
+                    <button class="btn btn-secondary" id="backToSelectionBtn">ወልጥ - ለውጥ</button>
+                </div>
+
+                <div class="letters-container" id="lettersContainer">
+                    <!-- Letter rows will be dynamically inserted here -->
+                </div>
+
+                <div class="recording-section">
+                    <h3 class="recording-title">Practice Pronunciation</h3>
+                    <div class="recording-controls">
+                        <button class="recording-btn" id="startRecordingBtn">
+                            <span>Start Recording</span>
+                        </button>
+                        <button class="recording-btn stop" id="stopRecordingBtn" disabled>
+                            <span>Stop Recording</span>
+                        </button>
+                    </div>
+                    <div class="recording-visualizer" id="recordingVisualizer">
+                        <!-- Visualizer bars will be dynamically inserted -->
+                    </div>
+                    <div class="recording-status" id="recordingStatus">Click "Start Recording" to practice your
+                        pronunciation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Letter Detail Modal -->
+    <div class="modal" id="letterModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <div class="modal-letter" id="modalLetter">ሀ</div>
+            <div class="meaning-section">
+                <div class="meaning-item">
+                    <div class="meaning-lang">Geez (ግዕዝ):</div>
+                    <div class="meaning-text" id="meaningGz">ሀልዎቱ ለአብ እምቅድመ ዓለም</div>
+                </div>
+                <div class="meaning-item">
+                    <div class="meaning-lang">English:</div>
+                    <div class="meaning-text" id="meaningEn">The existence of the Father is before the world</div>
+                </div>
+                <div class="meaning-item">
+                    <div class="meaning-lang">Amharic (አማርኛ):</div>
+                    <div class="meaning-text" id="meaningAm">የአብ መኖር ከዓለም በፊት ነው</div>
+                </div>
+            </div>
+            <button class="play-sound" id="playSoundBtn">
+                <span>Listen to Pronunciation</span>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Amharic Learning Platform &copy; 2023 | Practice makes perfect!</p>
+    </footer>
+
+    <script>
+        // Sample data for the two learning sequences
+        // First sequence is an array of arrays (rows)
+        const firstSequenceHaHu = [
+            // ሀ-series
+            [
+                {
+                    letter: "ሀ",
+                    voice: "sounds/letters/ha.mp3",
+                    meaning: {
+                        gz: "ሀልዎቱ ለአብ እምቅድመ ዓለም",
+                        en: "The existence of the Father is before the world",
+                        am: "የአብ መኖር ከዓለም በፊት ነው",
+                    },
+                },
+                {
+                    letter: "ሁ",
+                    voice: "sounds/letters/hu.mp3",
+                    meaning: {
+                        gz: "ኪያሁ ተወከሉ",
+                        en: "They believed in Him",
+                        am: "በእርሱ (በእግዚአብሔር) ታመኑ",
+                    },
+                },
+                {
+                    letter: "ሂ",
+                    voice: "sounds/letters/hi.mp3",
+                    meaning: {
+                        gz: "አስተይዎ ብሂዐ",
+                        en: "The Jews gave Him vinegar",
+                        am: "አይሁድ ጌታን ሖምጣጤ አጠጡት",
+                    },
+                },
+                {
+                    letter: "ሃ",
+                    voice: "sounds/letters/hae.mp3",
+                    meaning: {
+                        gz: "ሃሌ ሉያ",
+                        en: "He who existed before the world continues beyond it",
+                        am: "ቅድመ ዓለም የነበረ ዓለምን አሳልፎ የሚኖር",
+                    },
+                },
+                {
+                    letter: "ሄ",
+                    voice: "sounds/letters/he.mp3",
+                    meaning: {
+                        gz: "በኲለሄ ሀሎ",
+                        en: "God is present in all places and times",
+                        am: "እግዚአብሔር በሁሉ ቦታ እና ጊዜ አለ",
+                    },
+                },
+                {
+                    letter: "ህ",
+                    voice: "sounds/letters/hiu.mp3",
+                    meaning: {
+                        gz: "ህልው እግዚአብሔር",
+                        en: "God exists",
+                        am: "እግዚአብሔር አለ",
+                    },
+                },
+                {
+                    letter: "ሆ",
+                    voice: "sounds/letters/ho.mp3",
+                    meaning: {
+                        gz: "",
+                        en: "",
+                        am: "",
+                    },
+                },
+            ],
+
+            // ለ-series
+            [
+                {
+                    letter: "ለ",
+                    voice: "sounds/letters/le.mp3",
+                    meaning: {
+                        gz: "ለብሰ ሥጋ ዙኣነ",
+                        en: "God took our flesh",
+                        am: "እግዚአብሔር የእኛን ሥጋ ተዋሐደ",
+                    },
+                },
+                {
+                    letter: "ሉ",
+                    voice: "sounds/letters/lu.mp3",
+                    meaning: {
+                        gz: "ሣህሉ ለእግዚአብሔር",
+                        en: "The mercy of God",
+                        am: "የእግዚአብሔር ይቅርታ",
+                    },
+                },
+                {
+                    letter: "ሊ",
+                    voice: "sounds/letters/li.mp3",
+                    meaning: {
+                        gz: "ከሃሊ እግዚአብሔር",
+                        en: "God is Almighty",
+                        am: "እግዚአብሔር ሁሉን ቻይ ነው",
+                    },
+                },
+                {
+                    letter: "ላ",
+                    voice: "sounds/letters/la.mp3",
+                    meaning: {
+                        gz: "ላሜድ ልዑል እግዚአብሔር",
+                        en: "God is the Most High",
+                        am: "እግዚአብሔር ልዑል ነው",
+                    },
+                },
+                {
+                    letter: "ሌ",
+                    voice: "sounds/letters/le.mp3",
+                    meaning: {
+                        gz: "መቅለሌ ዕጹብ",
+                        en: "God who removes affliction",
+                        am: "ጭንቀትን የሚያቀል እግዚአብሔር",
+                    },
+                },
+                {
+                    letter: "ል",
+                    voice: "sounds/letters/lih.mp3",
+                    meaning: {
+                        gz: "መስቀል ዘወልደ አብ",
+                        en: "The cross of the Son of the Father",
+                        am: "የአብ ልጅ መስቀል",
+                    },
+                },
+                {
+                    letter: "ሎ",
+                    voice: "sounds/letters/lo.mp3",
+                    meaning: {
+                        gz: "ዘሀሎ እምቅድም",
+                        en: "God who existed before the world",
+                        am: "ቅድመ ዓለም የነበረ እግዚአብሔር",
+                    },
+                },
+            ],
+        ];
+
+
+        // Second sequence is a flat array
+        const secondSequenceABu = [
+            // row 1 (exact sequence you gave)
+            [
+                { letter: "አ", voice: "sounds/letters/a.mp3", meaning: { gz: "አ base (mock)", en: "A (mock)", am: "አ ማክ" } },
+                { letter: "ቡ", voice: "sounds/letters/bu.mp3", meaning: { gz: "ቡ base (mock)", en: "Bu (mock)", am: "ቡ ማክ" } },
+                { letter: "ጊ", voice: "sounds/letters/gi.mp3", meaning: { gz: "ጊ base (mock)", en: "Gi (mock)", am: "ጊ ማክ" } },
+                { letter: "ዳ", voice: "sounds/letters/da.mp3", meaning: { gz: "ዳ base (mock)", en: "Da (mock)", am: "ዳ ማክ" } },
+                { letter: "ሄ", voice: "sounds/letters/he.mp3", meaning: { gz: "ሄ base (mock)", en: "He (mock)", am: "ሄ ማክ" } },
+                { letter: "ው", voice: "sounds/letters/wu.mp3", meaning: { gz: "ው base (mock)", en: "Wu (mock)", am: "ው ማክ" } },
+                { letter: "ዞ", voice: "sounds/letters/zo.mp3", meaning: { gz: "ዞ base (mock)", en: "Zo (mock)", am: "ዞ ማክ" } }
+            ],
+
+            // row 2 (exact sequence you gave)
+            [
+                { letter: "በ", voice: "sounds/letters/be.mp3", meaning: { gz: "በ base (mock)", en: "Be (mock)", am: "በ ማክ" } },
+                { letter: "ጉ", voice: "sounds/letters/gu.mp3", meaning: { gz: "ጉ base (mock)", en: "Gu (mock)", am: "ጉ ማክ" } },
+                { letter: "ዲ", voice: "sounds/letters/di.mp3", meaning: { gz: "ዲ base (mock)", en: "Di (mock)", am: "ዲ ማክ" } },
+                { letter: "ሃ", voice: "sounds/letters/hae.mp3", meaning: { gz: "ሃ base (mock)", en: "Hae (mock)", am: "ሃ ማክ" } },
+                { letter: "ዌ", voice: "sounds/letters/we.mp3", meaning: { gz: "ዌ base (mock)", en: "We (mock)", am: "ዌ ማክ" } },
+                { letter: "ዝ", voice: "sounds/letters/ze.mp3", meaning: { gz: "ዝ base (mock)", en: "Ze (mock)", am: "ዝ ማክ" } },
+                { letter: "ዣ", voice: "sounds/letters/zha.mp3", meaning: { gz: "ዣ base (mock)", en: "Zha (mock)", am: "ዣ ማክ" } }
+            ],
+
+            // row 3 (exact sequence you gave)
+            [
+                { letter: "ገ", voice: "sounds/letters/ge.mp3", meaning: { gz: "ገ base (mock)", en: "Ge (mock)", am: "ገ ማክ" } },
+                { letter: "ዱ", voice: "sounds/letters/du.mp3", meaning: { gz: "ዱ base (mock)", en: "Du (mock)", am: "ዱ ማክ" } },
+                { letter: "ሂ", voice: "sounds/letters/hi.mp3", meaning: { gz: "ሂ base (mock)", en: "Hi (mock)", am: "ሂ ማክ" } },
+                { letter: "ዋ", voice: "sounds/letters/wa.mp3", meaning: { gz: "ዋ base (mock)", en: "Wa (mock)", am: "ዋ ማክ" } },
+                { letter: "ዜ", voice: "sounds/letters/ze2.mp3", meaning: { gz: "ዜ base (mock)", en: "Ze₂ (mock)", am: "ዜ ማክ" } },
+                { letter: "ዥ", voice: "sounds/letters/zh.mp3", meaning: { gz: "ዥ base (mock)", en: "Zh (mock)", am: "ዥ ማክ" } },
+                { letter: "ጦ", voice: "sounds/letters/to.mp3", meaning: { gz: "ጦ base (mock)", en: "To (mock)", am: "ጦ ማክ" } }
+            ],
+
+        ]
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const selectionScreen = document.getElementById('selectionScreen');
+        const learningScreen = document.getElementById('learningScreen');
+        const startLearningBtn = document.getElementById('startLearningBtn');
+        const backToWelcomeBtn = document.getElementById('backToWelcomeBtn');
+        const backToSelectionBtn = document.getElementById('backToSelectionBtn');
+        const lettersContainer = document.getElementById('lettersContainer');
+        const learningTitle = document.getElementById('learningTitle');
+        const letterModal = document.getElementById('letterModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalLetter = document.getElementById('modalLetter');
+        const meaningGz = document.getElementById('meaningGz');
+        const meaningEn = document.getElementById('meaningEn');
+        const meaningAm = document.getElementById('meaningAm');
+        const playSoundBtn = document.getElementById('playSoundBtn');
+        const startRecordingBtn = document.getElementById('startRecordingBtn');
+        const stopRecordingBtn = document.getElementById('stopRecordingBtn');
+        const recordingVisualizer = document.getElementById('recordingVisualizer');
+        const recordingStatus = document.getElementById('recordingStatus');
+
+        // Current state
+        let currentSequence = 0;
+        let currentLetterIndex = -1;
+        let currentRowIndex = -1;
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+        let visualizerInterval;
+
+        // Event listeners
+        startLearningBtn.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            selectionScreen.style.display = 'block';
+        });
+
+        backToWelcomeBtn.addEventListener('click', () => {
+            selectionScreen.style.display = 'none';
+            welcomeScreen.style.display = 'block';
+        });
+
+        backToSelectionBtn.addEventListener('click', () => {
+            learningScreen.style.display = 'none';
+            selectionScreen.style.display = 'block';
+        });
+
+        // Option cards selection
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', () => {
+                currentSequence = parseInt(card.getAttribute('data-sequence'));
+                selectionScreen.style.display = 'none';
+                learningScreen.style.display = 'block';
+
+                // Update learning title based on sequence
+                learningTitle.textContent = currentSequence === 0 ?
+                    'ሀለሐመሠ (ሀሁሂሃህሄሆ)' :
+                    'አቡጊዳ (አቡጊዳህሄውዞ)';
+
+                // Render letters
+                renderLetters();
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            letterModal.style.display = 'none';
+        });
+
+        // Play sound
+        playSoundBtn.addEventListener('click', () => {
+            // In a real implementation, this would play the actual sound file
+            let currentLetterData;
+            if (currentSequence === 0) {
+                currentLetterData = firstSequenceHaHu[currentRowIndex][currentLetterIndex];
+            } else {
+                currentLetterData = secondSequenceABu[currentLetterIndex];
+            }
+            alert('Playing pronunciation audio: ' + currentLetterData.voice);
+        });
+
+        // Recording functionality
+        startRecordingBtn.addEventListener('click', startRecording);
+        stopRecordingBtn.addEventListener('click', stopRecording);
+
+        // Functions
+        function renderLetters() {
+            lettersContainer.innerHTML = '';
+
+            if (currentSequence === 0) {
+                // First sequence: array of arrays (rows)
+                firstSequenceHaHu.forEach((row, rowIndex) => {
+                    const rowElement = document.createElement('div');
+                    rowElement.className = 'letter-row';
+
+                    row.forEach((letterData, letterIndex) => {
+                        const letterCard = document.createElement('div');
+                        letterCard.className = 'letter-card';
+                        letterCard.innerHTML = `
+                            <div class="letter">${letterData.letter}</div>
+                            <div class="letter-sound">${getSoundName(letterData.voice)}</div>
+                        `;
+
+                        letterCard.addEventListener('click', () => {
+                            currentRowIndex = rowIndex;
+                            currentLetterIndex = letterIndex;
+                            showLetterModal(letterData);
+                        });
+
+                        rowElement.appendChild(letterCard);
+                    });
+
+                    lettersContainer.appendChild(rowElement);
+                });
+            } else {
+                // Second sequence: flat array
+                const rowElement = document.createElement('div');
+                rowElement.className = 'letter-row';
+
+                secondSequenceABu.forEach((row, rowIndex) => {
+                    const rowElement = document.createElement('div');
+                    rowElement.className = 'letter-row';
+
+                    row.forEach((letterData, letterIndex) => {
+                        const letterCard = document.createElement('div');
+                        letterCard.className = 'letter-card';
+                        letterCard.innerHTML = `
+                            <div class="letter">${letterData.letter}</div>
+                            <div class="letter-sound">${getSoundName(letterData.voice)}</div>
+                        `;
+
+                        letterCard.addEventListener('click', () => {
+                            currentRowIndex = rowIndex;
+                            currentLetterIndex = letterIndex;
+                            showLetterModal(letterData);
+                        });
+
+                        rowElement.appendChild(letterCard);
+                    });
+
+                    lettersContainer.appendChild(rowElement);
+                });
+                lettersContainer.appendChild(rowElement);
+            }
+        }
+
+        function getSoundName(voicePath) {
+            // Extract sound name from path
+            const parts = voicePath.split('/');
+            const filename = parts[parts.length - 1];
+            return filename.replace('.mp3', '');
+        }
+
+        function showLetterModal(letterData) {
+            modalLetter.textContent = letterData.letter;
+            meaningGz.textContent = letterData.meaning.gz;
+            meaningEn.textContent = letterData.meaning.en;
+            meaningAm.textContent = letterData.meaning.am;
+            letterModal.style.display = 'flex';
+        }
+
+        function startRecording() {
+            // In a real implementation, this would use the MediaRecorder API
+            isRecording = true;
+            startRecordingBtn.disabled = true;
+            stopRecordingBtn.disabled = false;
+            recordingStatus.textContent = 'Recording... Speak the letter clearly';
+
+            // Create visualizer bars
+            recordingVisualizer.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'visualizer-bar';
+                bar.style.left = `${i * 6}px`;
+                bar.style.height = `${Math.random() * 30 + 5}px`;
+                recordingVisualizer.appendChild(bar);
+            }
+
+            // Animate visualizer
+            visualizerInterval = setInterval(() => {
+                const bars = document.querySelectorAll('.visualizer-bar');
+                bars.forEach(bar => {
+                    bar.style.height = `${Math.random() * 30 + 5}px`;
+                });
+            }, 100);
+        }
+
+        function stopRecording() {
+            // In a real implementation, this would stop the MediaRecorder
+            isRecording = false;
+            startRecordingBtn.disabled = false;
+            stopRecordingBtn.disabled = true;
+            recordingStatus.textContent = 'Recording stopped. Playing back your pronunciation...';
+
+            // Stop visualizer animation
+            clearInterval(visualizerInterval);
+
+            // Simulate playback after a delay
+            setTimeout(() => {
+                recordingStatus.textContent = 'Playback complete. Compare with the correct pronunciation.';
+
+                // Reset visualizer
+                setTimeout(() => {
+                    recordingVisualizer.innerHTML = '';
+                    recordingStatus.textContent = 'Click "Start Recording" to practice your pronunciation';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Initialize the app
+        renderLetters();
+    </script>
+</body>
+
+</html>

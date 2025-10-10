@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="am">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Lyrics Player with Multiple Verses</title>
+  <style>
+    body {
+      font-family: "Noto Sans Ethiopic", sans-serif;
+      line-height: 2;
+      font-size: 26px;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #f8f9fa;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    /* Audio player styling */
+    #audio {
+      width: 100%;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Lyrics section styling */
+    #lyrics-container {
+      margin: 30px 0;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .verse-section {
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .verse-header {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #3498db;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .play-verse-btn {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .play-verse-btn:hover {
+      background-color: #27ae60;
+    }
+
+    .play-verse-btn.playing {
+      background-color: #e74c3c;
+    }
+
+    .letter-container {
+      position: relative;
+      display: inline-block;
+      margin: 0 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .letter-container:hover {
+      background-color: #f0f0f0;
+    }
+
+    .paren {
+      color: teal;
+      position: relative;
+      display: inline-block;
+    }
+
+    .symbol-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .square {
+      color: red;
+      font-size: 0.6em;
+      position: absolute;
+      top: -1.2em;
+      left: 50%;
+      transform: translateX(-40%);
+    }
+
+    .square.second {
+      top: -2.4em;
+    }
+
+    .clickable-symbol {
+      cursor: pointer;
+      display: inline-block;
+      margin: 0 1px;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .clickable-symbol:hover {
+      color: blue;
+      transform: scale(1.2);
+    }
+
+    .locked {
+      background-color: #ffdede;
+    }
+
+    .voice-indicator {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin-right: 5px;
+      font-size: 12px;
+      text-align: center;
+      line-height: 20px;
+      vertical-align: middle;
+    }
+
+    .voice-1 {
+      background-color: #ff9999;
+    }
+
+    .voice-2 {
+      background-color: #99ccff;
+    }
+
+    .stacked-symbols {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: super;
+      font-size: 0.6em;
+      line-height: 1;
+      margin: 0 1px;
+    }
+
+    .stacked-symbol {
+      color: red;
+    }
+
+    .stacked-symbol:first-child {
+      margin-bottom: 2px;
+    }
+
+    /* Translation section styling */
+    .translation-section {
+      margin-top: 40px;
+      border-top: 2px solid #ccc;
+      padding-top: 20px;
+    }
+
+    .translation-header {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    #translations-container {
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .translation-group {
+      margin-bottom: 30px;
+    }
+
+    .group-header {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3498db;
+    }
+
+    .reading-container {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .reading-container:hover {
+      background-color: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .reading-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    .language-label {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 10px;
+      vertical-align: top;
+    }
+
+    .language-label.am {
+      background-color: #2ecc71;
+    }
+
+    .language-label.en {
+      background-color: #e74c3c;
+    }
+
+    .language-label.gz {
+      background-color: #9b59b6;
+    }
+
+    .reading-line {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .reading-content {
+      flex: 1;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 15px;
+      width: 80%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-modal {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-modal:hover {
+      color: #000;
+    }
+
+    .commentary-item {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #fff;
+    }
+
+    .commentary-reading {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #555;
+      border-left: 4px solid #3498db;
+      padding-left: 15px;
+    }
+
+    .author-info {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #e74c3c;
+    }
+
+    .author-name {
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    .author-title {
+      font-style: italic;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+
+    .language-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ecf0f1;
+    }
+
+    .language-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #ecf0f1;
+      border: none;
+      border-radius: 5px 5px 0 0;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .language-tab.active {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .language-tab:hover:not(.active) {
+      background-color: #bdc3c7;
+    }
+
+    .language-content {
+      display: none;
+    }
+
+    .language-content.active {
+      display: block;
+    }
+
+    /* Font test section */
+    .font-test {
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 2px solid #ccc;
+    }
+
+    .font-test h3 {
+      margin-bottom: 10px;
+    }
+
+    .symbol-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .symbol-item {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      font-size: 24px;
+    }
+
+    .reading-container {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      /* This makes it clear it's clickable */
+      transition: all 0.3s ease;
+    }
+
+    .reading-container:hover {
+      background-color: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-color: #3498db;
+      /* Change border color on hover */
+    }
+
+    .symbol-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .reading-line {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .reading-content {
+      flex: 1;
+    }
+
+    /* Adjust language label order to match your preference */
+    .language-label.gz {
+      background-color: #9b59b6;
+      order: 1;
+    }
+
+    .language-label.am {
+      background-color: #2ecc71;
+      order: 2;
+    }
+
+    .language-label.en {
+      background-color: #e74c3c;
+      order: 3;
+    }
+
+    /* Navigation buttons */
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .nav-button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-button:hover {
+      background-color: #2980b9;
+    }
+
+    .nav-button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      text-align: center;
+      font-size: 18px;
+      margin: 10px 0;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>ውዳሴ ማርያም ዘሰኑይ</h2>
+
+  <div class="navigation">
+    <button id="prev-button" class="nav-button">Previous</button>
+    <div class="page-indicator">Page <span id="current-page">1</span> of <span id="total-pages">2</span></div>
+    <button id="next-button" class="nav-button">Next</button>
+  </div>
+
+  <audio id="audio" controls>
+    <source src="./symbols/compressed/01-WedaseMar_Monday.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="lyrics-container">
+    <!-- Lyrics will be rendered here by JavaScript -->
+  </div>
+
+  <div class="translation-section">
+    <h2 class="translation-header">አንድምታ ትርጓሜ</h2>
+
+    <div id="translations-container">
+      <!-- Translations will be rendered here by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Modal for commentaries -->
+  <div id="commentary-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div id="modal-body">
+        <!-- Modal content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Page data structure
+    const pageData = [
+      {
+        title: "ውዳሴ ማርያም ዘሰኑይ",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+          {
+            key: "ዘሠኑይ",
+            data: [
+              { time: 1.14, end: 1.18,  text: "(ፈ)[፴](ቀ)[^](ደ)" },
+              { time: 1.18, end: 1.28,  text: "እግ(ዚ)[,](እ)[ረዩ]" },
+              { time: 1.29, end: 1.34,  text: "(ያ)[V]ግ(ዕ)[፡](ዞ)[ምን]" },
+              { time: 1.35, end: 1.39,  text: "(ለ)[,^]አ(ዳ)[,](ም)[ቀ]" },
+              { time: 1.40, end: 1.47,  text: "(ኅ)[V]ዙ(ነ)[.] ወትኩዘ (ልብ)[ረዩ]" },
+              { time: 1.47, end: 1.50,  text: "ወያግ(ብ)[.](ኦ)[ለኪ]" },
+              { time: 1.50, end: 1.54,  text: "ኀበ (ዘ)[V]ት(ካ)[,^]ት" },
+              { time: 1.55, end: 1.58,  text: "መን(በ)[፴](ሩ)[ሮን]" },
+              { time: 1.58, end: 2.02, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" }
+            ]
+          },
+
+        ],
+        translationData: [
+          {
+            key: "ፈቀደ እግዚእ",
+            data: [
+              {
+                reading: {
+                  am: "ጌታ በልቡ ያዘነና የተከዘ አዳምን ነፃ ያወጣውና ",
+                  en: "The Lord in His heart grieved for and freed the bound Adam",
+                  gz: "ፈቀደ እግዚእ ያግእዞ ለአዳም ኅዙነ ወትኩዘ ልብ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "አምስት ሽህ ከ፭፻ ዘመን በግብርናተ ዲያብሎ ስየነበረ አዳምን ነፃ ፡ ያደርገው ዘንድ ወደደ።ኅዙነ ልብ ትኩዘ ልብ ሲል ነው። ተምያጠ ወተውላጠ ህላዌያት ጽጌያተ ወፍሬ ያተ ትሩፋት ስመ ወግብረ ወልድ እንዲል ። ወክብረ ወልድም ይላል። አንድም ያዘነ የተከዘ አዳምን ሊያድነው ወደደ አዳምን የቤተ ፈት ልማድ አላገኘውም ። ቤተ ፈት በዚህ ጊዜ እበላ እጠጣ ነበር ። በዚህ ጊዜ ደስታ አደርግ ነበር እያለ ያዝናል እርሱ ግን አትብላ ያለኝን ዕፀ በለስ በልቼ ከፈጣሪዬ ትእዛዝ ወጻሁ ብሎ ነውና ። ወአልቦቱ ካልዕ ሕሊና ዘእንበላ ብካይ ላዕለ ኃጢአቱ እንዲል አንድም ጌታ ያዘነ የተከዘ ሁኖ አዳምን ነፃ ሊያወጣ ወደደ ተከዘት ነፍስየ እስከ ለሞት እንዲል አመሥግነኝ ብትለው ምነው ወደሌላ ሄደ ቢሉ።ወደሌላ መሄዱም አይደል።አዳምን አስከትላው መጥታ ነበረና ቢያየው አሣው አንድም ነገር ከሥሩ ውሀ ከጽሩ እንዲሉ ፣አዳም አባቷ ነውና።ከጥንት ጀምሮ ተርኮ ለመናገር ይዟል።ያስ ቢሆን ስለ ᝐን ፈቀደ እግዚእ አለ መክበሪዋን ሲሻ ከዚያ ሁሉ ታዖፊላ ለ: ስን ዜና ሐዋርያትን ጽፈሕ ስደድልኝ ቢለው እምጊዜ ዕርገቱ ለእግዚእነ እንዳለ ፡ መክበሪያቸውን ሲሻ።",
+                      en: "For five thousand five hundred years, while Adam was in the bondage of the devil, the Lord wanted to free him. 'Ḥzena leb' means 'grieved heart'. It refers to the changed and transformed nature, the fruits and benefits of the glory of the Son's name and work. The Lord, though grieved, wanted to save the bound Adam. He did not find the tradition of redemption for Adam. At this time, it was 'I eat, I drink'. At this time, while saying 'make joy', He grieves because he said 'I ate the fig tree that I was told not to eat and departed from my Creator's command'. And he had no other mind to weep for his sin. The Lord, though grieved and bound, wanted to free Adam. 'My soul is bound until death' - if you say 'I thank you', why did He go to another? He didn't go to another. He came following Adam. If He saw him, the fish, something from its root water, from its branch, they say. Adam is his father. From ancient times, he has been accustomed to speaking. If so, why did the Lord say 'He willed'? When He sought his glory, from all that, it is revealed that: when He said 'Write the news of the apostles and send it to me', since then His work is for our Lord, when He sought their glory.",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                reading: {
+                  am: "ወደ ቀድሞው ቦታው ይመልሰው ዘንድ ወደደ ",
+                  en: "He wanted to return him to his former place",
+                  gz: "ወያግብዖ ኀበ ዘትካት መንበሩ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "ወደቀደመ ቦታው ወደ ቀደመ ክብሩ ይመልሰው ዘንድ ወደደ፡ ክብር ቢሹ ልጅነት፤ ቦታ ቢሹ ገነት፤ ገነት ከሆነ ያለቦታ መኖር አይቻለውምና። ከዚያውም ዘንድ ካለመደው የለመደውን ቢሰጡት ደስ ይለዋልና፡ ይህማ ለሰማይና ለምድር ምን ቦታ አላቸው ቦታቸው እርሱ አይደለም። አኃዜ ዓለም በእራኁ ኲሉ እኁዝ ውስተ እዴሁ ይፀውር ድደ ወይነብር ጠፈረ እንዲል። ለሰማይና ለምድር ምን ቦታ አላቸው ቢሉ የዕርቅ ምልክት ነው። ንጉሥ የተጻልውን ሰናፊልህን አትታጠቅ እንዲህ ካለ ቦታ አትውጣ ብሎ ወስኖ ያግዘዋል በታረቀው ጊዜ ርስቱን ጉልቱን ቤቱን ንብረቱን ይመልስለታል እንደዚህም ሁሉ የዕርቅ ምልክት ነው።",
+                      en: "For five thousand five hundred years, while Adam was in the bondage of the devil, the Lord wanted to free him. 'Ḥzena leb' means 'grieved heart'. It refers to the changed and transformed nature, the fruits and benefits of the glory of the Son's name and work. The Lord, though grieved, wanted to save the bound Adam. He did not find the tradition of redemption for Adam. At this time, it was 'I eat, I drink'. At this time, while saying 'make joy', He grieves because he said 'I ate the fig tree that I was told not to eat and departed from my Creator's command'. And he had no other mind to weep for his sin. The Lord, though grieved and bound, wanted to free Adam. 'My soul is bound until death' - if you say 'I thank you', why did He go to another? He didn't go to another. He came following Adam. If He saw him, the fish, something from its root water, from its branch, they say. Adam is his father. From ancient times, he has been accustomed to speaking. If so, why did the Lord say 'He willed'? When He sought his glory, from all that, it is revealed that: when He said 'Write the news of the apostles and send it to me', since then His work is for our Lord, when He sought their glory.",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                reading: {
+                  am: "ቅድስት ሆይ ለምኝልን",
+                  en: "O Holy One, have mercy on me",
+                  gz: "ሰዓሊ ለነ ቅድስት"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "፭ሺህ ካ፭፻ ዘመን በግብርናተ ዲያብሎስ የነበረ አዳምን ነፃ ካደረገው ልጅሽ እመቤታችን ጽንዕት በድንግልና ጸጋውን ክብሩን እንዳይን ለምኝልን ቅድስት አለ፤ ንጽሕት ጽንዕት ክብርት ልዩ ሲል ነው። ንጽሕትም አለ ሌሎች ሴቶች ከነቢብ ከገቢር ቢነጹ ከሐልዮ አይነጹም፤ እርሱዋ ግን ከነቢብ ከገቢር ከሐልዮ ንጽሕት ናትና። ወኢረኩሰት በምንትኒ እምዘፈጠራ ድንግል በሕሊናሃ ወድንግል በሥጋሃ እንዲል። ጽንዕትም አለ ሌሎች ሴቶች ቢጸኑ ለጊዜው ነው፤ ኋላ ግን ተፈትሖ አለባቸው። እርሱዋ ግን ቅድመ ጸኒስ ቅድመ ወሊደ ጊዜ ወሊድ ድኅረ ወሊድ ጽንዕት ናትና። ክብርትም አለ ሌሎችን ሴቶች ብናከብራቸው ጻድቃንን ሰማዕታትን ወለዱ ብለን ነው፤ እርሱዋን ግን ወላዲተ አምላክ ብለን ነውና። ልዩም አለ እናትነት ከድንግልና አስተባብራ የምትገኝ ከመቤታችን በቀር ሌላ ሴት የለችምና። ዓይኑ ዓ ቢሆን አዕምሮውን ለብዎውን ሳይብን፤ አልፋ አ ቢሆን ለምኝልን ማለት ነው። ልመናስ ከዚያ በኋላ ስንኳን በሱዋ በሌሎችም የለባቸውም። በቀደመ ልመናዋ የምታስምር ስለ ሆነ እንዲህ አለ እንጂ። ሰአሊ ለነ ቅድስትን ማን ተናግሮታል ቢሉ ቅዱስ ኤፍሬም ተናግሮታል፤ ይህማ እንዳይሆን በግብፃውያን በመጽሐፋቸውም በቃላቸውም አይገኝም ምሳ ብሎ ቅዱስ ያሬድ ለዚማ መክፈያ ተናግሮታል። አንድም የኋላ ሊቃውንት ተናግረውታል ይሳሱ።",
+                      en: "",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              },
+            ]
+          }
+        ]
+      },
+      {
+        title: "ውዳሴ ማርያም ዘሰኑይ",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+        {
+            key: "ለሔዋን",
+            data: [
+              { time: 2.03, end: 2.10, text: "ሠ(ረ)[,](ቀ)[ቀ] በ(ሥ)[V](ጋ)[ሠም]" },
+              { time: 2.11, end: 2.17, text: "(እ)[፴]ምድን(ግ)[፡](ል)[ጎል]" },
+              { time: 2.17, end: 2.25, text: "ዘእን(በለ)[ነኪ] (ዘ)[V]ር(ዐ)[፴] ብእ(ሲ)[ሔ]" },
+              { time: 2.25, end: 2.28, text: "ወአድ(ኀ)[V]ነ(ነ)[ር]" },
+              { time: 2.28, end: 2.40, text: "ለ(ሔ)[,](ዋ)[,](ን)[ረዩ]" },
+              { time: 2.54, end: 2.59, text: "እንተ አስሐ(ታ)[ሰአ] (ከ)[,^]ይ(ሲ)[ኃኒ]" },
+              { time: 2.59, end: 3.05, text: "(ፈ)[~]ት(ሐ)[፴] ላዕ(ሌሃ)[ኃኒ]" },
+              { time: 3.05, end: 3.12, text: "እግዚአ(ብ)[V](ሔ)[.]ር እንዘ ይ(ብል)[ሠም]" },
+              { time: 3.12, end: 3.19, text: "(ብዙ)[ሰአ]ኀ አ(በ)[,^]ዝ(ኆ)[ኃኒ] ለሕ(ማ)[V]ም(ኪ)[ር]" },
+              { time: 3.19, end: 3.29, text: "ወለ(ፃ)[,]ዕ(ር)[,](ኪ)[ዚእ]" },
+              { time: 3.30, end: 3.36, text: "(ሠ)[ነኪ]ምረ (ልቡ)[ሠም]" },
+              { time: 3.36, end: 3.40, text: "ኀበ ፍቅረ (ሰ)[.](ብእ)[ትስ]" },
+              { time: 3.40, end: 3.42, text: "ወአ(ግዐ)[፴](ዛ)[ሮን]" },
+              { time: 3.43, end: 3.46, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" },
+            ]
+          }
+        ],
+        translationData: [
+          {
+            key: "Verse 1",
+            data: [
+              {
+                reading: {
+                  am: "ከድንግል ያለ ወንድ ዘር በሥጋ ተወለደና አዳነን።",
+                  en: "",
+                  gz: "ሠረቀ በሥጋ እምድንግል ዘእንበለ ዘርአ ብእሲ ወኣድኃነነ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "ብርሃን ብሎ የሚያመጣ ነውና እንደ አርእስት ሠረቀ ብሎ አነሣ። ፈቀደ ብሎ ነበርና ወዶም አልቀረ ዘር ምክንያት ሳይሆነው ከድንግል ተወለደ ተወልዶም አዳነን። በሥጋ አለ፤ በመለኮቱ አትወልደውምና። አኮ ወልደ ማርያም በመለኮቱ አላ፤ በከመ ሥርዓተ ትስብእቱ እንዲል። ልደቱን በዘርዕ ያላደረገ እንበለ ዘርዕ ያደረገው ስለ ምን ነው ቢሉ ቀዳማዊ ልደቱን ለመግለጽ ፭ሺህ ካ፭፻ ዘመን ሲፈጸም ከመቤታችን ያለ አባት ቢወለድ ቅድመ ዓስም ከአብ እንበለ እም እንደ ተወለደ ያጠይቃልና። ልደት ቀዳማዊ ተዓውቀ በደኀራዊ ልደት እንዲል። ዳግመኛም በዘርዕ በሩካቤ ተወልዶ ቢሆን ዕሩቅ ብእሲ ባሉት ነበርና። ሶበሰ ተወልደ በሩካቤ ብእሲ ወብእሲት ዘከማየ ብዙኃን እምተሐዘብዎ ወእምረሰይዎ ሐሰተ እንዲል። ያውስ ቢሆን ተፈትሖ ካላት ያላደረገው ተፈትሖ ከሌላት ያደረገው ስለ ምን ነው?",
+                      en: "Commentary for the first part of page 2",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              },
+                            {
+                reading: {
+                  am: "ከድንግል ያለ ወንድ ዘር በሥጋ ተወለደና አዳነን።",
+                  en: "",
+                  gz: "ሠረቀ በሥጋ እምድንግል ዘእንበለ ዘርአ ብእሲ ወኣድኃነነ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "ብርሃን ብሎ የሚያመጣ ነውና እንደ አርእስት ሠረቀ ብሎ አነሣ። ፈቀደ ብሎ ነበርና ወዶም አልቀረ ዘር ምክንያት ሳይሆነው ከድንግል ተወለደ ተወልዶም አዳነን። በሥጋ አለ፤ በመለኮቱ አትወልደውምና። አኮ ወልደ ማርያም በመለኮቱ አላ፤ በከመ ሥርዓተ ትስብእቱ እንዲል። ልደቱን በዘርዕ ያላደረገ እንበለ ዘርዕ ያደረገው ስለ ምን ነው ቢሉ ቀዳማዊ ልደቱን ለመግለጽ ፭ሺህ ካ፭፻ ዘመን ሲፈጸም ከመቤታችን ያለ አባት ቢወለድ ቅድመ ዓስም ከአብ እንበለ እም እንደ ተወለደ ያጠይቃልና። ልደት ቀዳማዊ ተዓውቀ በደኀራዊ ልደት እንዲል። ዳግመኛም በዘርዕ በሩካቤ ተወልዶ ቢሆን ዕሩቅ ብእሲ ባሉት ነበርና። ሶበሰ ተወልደ በሩካቤ ብእሲ ወብእሲት ዘከማየ ብዙኃን እምተሐዘብዎ ወእምረሰይዎ ሐሰተ እንዲል። ያውስ ቢሆን ተፈትሖ ካላት ያላደረገው ተፈትሖ ከሌላት ያደረገው ስለ ምን ነው?",
+                      en: "Commentary for the first part of page 2",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: "ውዳሴ ማርያም ዘሰኑይ",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+                    {
+            key: "ኢየሱስ",
+            data: [
+              { time: 3.48, end: 3.55, text: "ኢ(የ)[ዓይ](ሱ)[^](ስ)[ንቲ] ክርስ(ቶስ)[ውእ]" },
+              { time: 3.57, end: 4.05, text: "(ቃ)[፡]ል ዘተ(ሰ)[,]ብ(ቀ)[ቀ]" },
+              { time: 4.06, end: 4.11, text: "ወ(ኀ)[V]ደ(ረ)[.] ላዕ(ሌነ)[ሠም]" },
+              { time: 4.11, end: 4.17, text: "ወር(ኢ)[ሰአ]ነ ስብ(ሐ)[,^]ቲ(ሁ)[ዕኒ]" },
+              { time: 4.18, end: 4.24, text: "(ከ)[V]መ ስብ(ሐ)[፴]ተ (አ)[V]ሐ(ዱ)[,,^]" },
+              { time: 4.26, end: 4.28, text: "(ዋ)[V]ሕ(ድ)[፴]" },
+              { time: 4.27, end: 4.35, text: "ለአ(ቡ)[.](ሁ)[ዚእ]" },
+              { time: 4.35, end: 4.40, text: "(ሠ)[~](ምረ)[ረዩ]" },
+              { time: 4.41, end: 4.44, text: "ይሠ(ሃለ)[፴](ነ)[ሮን]" },
+              { time: 4.44, end: 4.47, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" },
+            ]
+          },
+        ],
+        translationData: [
+          {
+            key: "Verse 1",
+            data: [
+              {
+                reading: {
+                  am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም",
+                  en: "Translation for the first part of page 3",
+                  gz: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም በግዕዝ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል አንድምታ",
+                      en: "Commentary for the first part of page 3",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: "ውዳሴ ማርያም ዘሰኑይ",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+    {
+            key: "ርእየ",
+            data: [
+              { time: 4.48, end: 4.56, text: "(ርእ)[ኮን](የ)[ኪ]" },
+              { time: 4.57, end: 5.03, text: "ኢ(ሳይ)[ፔር](ይ)[፴](ያ)[V]ስ ነ(ቢ)[.](ይ)[ለኪ]" },
+              { time: 5.04, end: 5.11, text: "(በ)[~](መ)[ወቀ]ንፈሰ (ት)[፴]ን(ቢ)[,](ት)[ቀ]" },
+              { time: 5.12, end: 5.18, text: "ምስ(ጢ)[V]ሮ ለዐማኑ(ኤል)[ሠም]" },
+              { time: 5.19, end: 5.25, text: "ወበእን(ተዝ)[ሰአ] ጸር(ሐ)[ዲ]" },
+              { time: 5.26, end: 5.34, text: "(እ)[፥]ንዘ (ይ)[](ብል)[ዚእ]" },
+              { time: 5.35, end: 5.39, text: "ሕ(ፃ)[,](ን)[ቀ] ተ(ወ)[^]ልደ ለ(ነ)[ር]" },
+              { time: 5.40, end: 5.44, text: "(ወ)[~](ልድ)[ሠም]" },
+              { time: 5.45, end: 5.53, text: "(ተ)[V](ው)[ነገ]ህበ (ለ)[፴](ነ)[ሮሜ]" },
+              { time: 4.54, end: 4.57, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" },
+
+            ]
+          },
+        ],
+        translationData: [
+          {
+            key: "Verse 1",
+            data: [
+              {
+                reading: {
+                  am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም",
+                  en: "Translation for the first part of page 3",
+                  gz: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም በግዕዝ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል አንድምታ",
+                      en: "Commentary for the first part of page 3",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+    {
+        title: "ውዳሴ ማርያም ዘሰኑይ",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+          {
+            key: "ተፈሣሕ",
+            data: [
+              { time: 5.58, end: 6.08,  text: "(ተ)[V](ፈ)[ለሔ](ሣ)[,](ሕ)[ዋን]" },
+              { time: 6.08, end: 6.13, text: "(ወ)[፴]ተ(ሐ)[,^](ሠ)[,](ይ)[ሴፍ]" },
+              { time: 6.14, end: 6.20, text: "(ኦ)[~] ዘመደ ዕጓለ እመ ሕያው" },
+              { time: 6.21, end: 6.27, text: "እስመ አፍቀ(ሮ)[ሰአ] እግዚ(አ)[,^]ብ(ሔ)[•](ር)[ዴ]" },
+              { time: 6.27, end: 6.36, text: "(ለ)[,]ዓ(ለ)[,](ም)[ዚእ]" },
+              { time: 6.37, end: 6.44, text: "ወመ(ጠ)[፡](ወ)[ሒ]" },
+              { time: 6.44, end: 6.49, text: "ወል(ዶ)[ሰአ] (ዋ)[,^](ሕ)[,](ደ)[ቀ]" },
+              { time: 6.49, end: 6.54, text: "ከ(መ)[ፔር] (ይ)[፴]ሕ(የ)[V]ው (ኲ)[፴](ሉ)[ሮን]" },
+
+              { time: 6.56, end: 6.59, text: "ዘየ(አ)[ነኪ]ምን ቦ(ቱ)[^] እስከ ለዓ(ለ)[ር]ም" },
+              { time: 7.00, end: 7.08, text: "ፈ(ነ)[ዚእ]ወ (ለ)[^](ነ)[ሠም]" },
+              { time: 7.08, end: 7.16, text: "መዝ(ራ)[V]ዕ(ቶ)[ነገ] ል(ዑ)[፴](ለ)[ሮሜ]" },
+              { time: 7.17, end: 7.20, text: "ሰ(አሊ)[ነኪ] ለ(ነ)[.] ቅድ(ስት)[ር]።" }
+            ]
+          },
+          {
+            key: "ኀለፈ ክረምት",
+            data: [
+              { time: 5.58, end: 6.08,  text: "ኀ(ለ)[^](ፈ)[,፡] ክረም(ት)[ለኪ]" },
+              { time: 6.08, end: 6.13, text: "(ቆ)[,^](መ)[V] በረከት" },
+              { time: 6.13, end: 6.20, text: "ተሠር(ገ)[^](ወ)[V] (ም)[ቤዛነ]ድር (በ)[V]ስነ" },
+              { time: 6.21, end: 6.27, text: "(ጽ)[^]ጌያ(ት)[ር] ለ(መ)[ብበ]ር(ዓ)[,]ዊ(ሃ)[፴]" },
+              { time: 6.27, end: 6.36, text: "ትብ(ሎ)[,V] መር(ዓ)[.]ት" },
+              { time: 6.36, end: 6.44, text: "(ወ)[ነድ,]ልድ እ(ኁ)[ፔር](የ)[ፔር]" },
+            ]
+          },
+        ],
+        translationData: [
+          {
+            key: "Verse 1",
+            data: [
+              {
+                reading: {
+                  am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም",
+                  en: "Translation for the first part of page 3",
+                  gz: "የሦስተኛው ገጽ የመጀመሪያ ክፍል ትርጉም በግዕዝ"
+                },
+                commentaries: [
+                  {
+                    reading: {
+                      am: "የሦስተኛው ገጽ የመጀመሪያ ክፍል አንድምታ",
+                      en: "Commentary for the first part of page 3",
+                      gz: ""
+                    },
+                    author: {
+                      name: {
+                        am: "ከቀድሞ አባቶች ጀምሮ ሲወርድ ሲዋረድ የመጣሙ ንባቡና ትርጓሜው የኢትዮጵያ ሊቃውንት እንደ ጻፉትና",
+                        en: "As written by Ethiopian scholars according to the reading and interpretation that has been passed down from ancient fathers",
+                        gz: ""
+                      },
+                      title: {
+                        am: "ውዳሴ ማርያም አንድምታ",
+                        en: "Wedase Maryam Commentary",
+                        gz: ""
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+    ];
+
+    const symbolSounds = {
+      "ለኪ": "./symbols/compressed/1.selamleki.m4a",
+      "ነኪ": "./symbols/compressed/6.yekednekitsyone.m4a",
+      "፴": "./symbols/compressed/11.selasa.m4a",
+      "ምን": "./symbols/compressed/14.mente.m4a",
+      "ቀ": "./symbols/compressed/15.atmeke.m4a",
+      "ልብ": "./symbols/compressed/16.hezunewetkuzelebe.m4a",
+      "ሠም": "./symbols/compressed/18.semre.m4a",
+      "ሰአ": "./symbols/compressed/22.sealilene.m4a",
+      "ኃኒ": "./symbols/compressed/23.medhanit.m4a",
+      "ትስ": "./symbols/compressed/24.tsali.m4a",
+      "ዴ": "./symbols/compressed/29.weyastedelu.m4a",
+      "ሴፍ": "./symbols/compressed/30.yosefe.m4a",
+      "ሮን": "./symbols/compressed/34.beterearone.m4a",
+      "አቡ": "./symbols/compressed/41.abuhu.m4a",
+      "ጠጠ": "./symbols/compressed/42.wesetete.m4a",
+      "ጎል": "./symbols/compressed/61.gole.m4a",
+    };
+
+    // Audio cache to avoid reloading
+    const audioCache = {};
+
+    // Global variables
+    let currentPage = 0;
+    let repeatSegment = null;
+
+    // DOM elements
+    const lyricsContainer = document.getElementById("lyrics-container");
+    const audio = document.getElementById("audio");
+    const titleElement = document.querySelector("h2");
+    const prevButton = document.getElementById("prev-button");
+    const nextButton = document.getElementById("next-button");
+    const currentPageElement = document.getElementById("current-page");
+    const totalPagesElement = document.getElementById("total-pages");
+
+    // Initialize page
+    function init() {
+      totalPagesElement.textContent = pageData.length;
+      loadPage(currentPage);
+
+      // Add event listeners for navigation
+      prevButton.addEventListener("click", goToPreviousPage);
+      nextButton.addEventListener("click", goToNextPage);
+
+      // Update navigation buttons
+      updateNavigationButtons();
+    }
+
+    // Load a specific page
+    function loadPage(pageIndex) {
+      if (pageIndex < 0 || pageIndex >= pageData.length) return;
+
+      currentPage = pageIndex;
+      const page = pageData[pageIndex];
+
+      // Update page title
+      titleElement.textContent = page.title;
+
+      // Update audio source
+      audio.src = page.audioSrc;
+
+      // Update page indicator
+      currentPageElement.textContent = pageIndex + 1;
+
+      // Render lyrics and translations
+      renderLyrics(page.lyricsTimestamp);
+      renderTranslations(page.translationData);
+
+      // Update navigation buttons
+      updateNavigationButtons();
+    }
+
+    // Navigation functions
+    function goToPreviousPage() {
+      if (currentPage > 0) {
+        loadPage(currentPage - 1);
+      }
+    }
+
+    function goToNextPage() {
+      if (currentPage < pageData.length - 1) {
+        loadPage(currentPage + 1);
+      }
+    }
+
+    function updateNavigationButtons() {
+      prevButton.disabled = currentPage === 0;
+      nextButton.disabled = currentPage === pageData.length - 1;
+    }
+
+    // Function to play symbol sound
+    function playSymbolSound(symbolText) {
+      // Find the matching sound file
+      let soundFile = null;
+
+      // Check for exact matches first
+      if (symbolSounds[symbolText]) {
+        soundFile = symbolSounds[symbolText];
+      } else {
+        // Check for partial matches (if the symbol contains a known key)
+        for (const [key, file] of Object.entries(symbolSounds)) {
+          if (symbolText.includes(key)) {
+            soundFile = file;
+            break;
+          }
+        }
+      }
+
+      if (soundFile) {
+        // Use cached audio or create new one
+        if (!audioCache[soundFile]) {
+          audioCache[soundFile] = new Audio(soundFile);
+          audioCache[soundFile].onerror = () => {
+            console.error(`Failed to load sound: ${soundFile}`);
+            alert(`Sound file not found: ${soundFile}`);
+          };
+        }
+
+        // Play the sound
+        const audioElement = audioCache[soundFile];
+        audioElement.currentTime = 0; // Reset to start
+        audioElement.play().catch(error => {
+          console.error("Error playing symbol sound:", error);
+          alert(`Could not play sound for symbol: ${symbolText}`);
+        });
+      } else {
+        console.warn(`No sound found for symbol: ${symbolText}`);
+        alert(`No sound file mapped for symbol: "${symbolText}"`);
+      }
+    }
+
+    // ✅ Helper: convert mm.ss (like 1.14 → 74 sec) or decimal minutes (1.5 → 90 sec)
+    function parseTime(value) {
+      if (typeof value !== "number") return 0;
+      const str = value.toString();
+      if (str.includes('.')) {
+        const [minStr, secStr] = str.split('.');
+        const min = parseInt(minStr, 10);
+        const sec = parseInt(secStr.padEnd(2, '0'), 10);
+        if (sec >= 60) return value * 60; // fallback for decimal minute
+        return min * 60 + sec;
+      }
+      return value * 60;
+    }
+
+    // Convert all timestamps before rendering
+    function prepareLyricsData(lyricsTimestamp) {
+      lyricsTimestamp.forEach(group => {
+        group.data.forEach(segment => {
+          segment.time = parseTime(segment.time);
+          segment.end = parseTime(segment.end);
+        });
+      });
+      return lyricsTimestamp;
+    }
+
+    function renderWord(text) {
+      let voice = null;
+      const voiceMatch = text.match(/^<([12])>/);
+      if (voiceMatch) {
+        voice = voiceMatch[1];
+        text = text.replace(/^<[12]>/, '');
+      }
+
+      const container = document.createElement("span");
+      container.classList.add("letter-container");
+
+      if (voice) {
+        const voiceIndicator = document.createElement("span");
+        voiceIndicator.classList.add("voice-indicator", `voice-${voice}`);
+        voiceIndicator.textContent = voice;
+        voiceIndicator.title = `Voice ${voice}`;
+        container.appendChild(voiceIndicator);
+      }
+
+      const regex = /(\([^)]+\))(\[[^\]]*\])?|([^\(\[\)]+)/g;
+      let match;
+      let currentHTML = "";
+
+      while ((match = regex.exec(text)) !== null) {
+        if (match[1]) {
+          let parenWord = match[1].slice(1, -1);
+          let symbol = match[2] ? match[2].slice(1, -1) : "";
+
+          if (symbol) {
+            if (symbol.includes('][')) {
+              const symbols = symbol.split('][');
+              let symbolHTML = '<span class="stacked-symbols">';
+              symbols.forEach(sym => {
+                if (sym) symbolHTML += `<span class="stacked-symbol clickable-symbol" data-symbol="${sym}">${sym}</span>`;
+              });
+              symbolHTML += '</span>';
+              currentHTML += `<span class="symbol-container"><span class="paren">${parenWord}</span>${symbolHTML}</span>`;
+            } else {
+              currentHTML += `<span class="symbol-container"><span class="paren">${parenWord}</span><sup class="square clickable-symbol" data-symbol="${symbol}">${symbol}</sup></span>`;
+            }
+          } else {
+            currentHTML += `<span class="paren">${parenWord}</span>`;
+          }
+        } else if (match[3]) {
+          currentHTML += match[3];
+        }
+      }
+
+      container.innerHTML += currentHTML;
+      container.querySelectorAll(".clickable-symbol").forEach(s => {
+        s.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const symbolText = s.getAttribute('data-symbol');
+          console.log(`Clicked symbol: "${symbolText}"`);
+          playSymbolSound(symbolText);
+        });
+      });
+
+      // Apply custom font to symbols
+      applyCustomFont(container);
+
+      return container;
+    }
+
+    // Apply custom font to elements
+    function applyCustomFont(element) {
+      if (typeof element.querySelectorAll === 'function') {
+        element.querySelectorAll('.square, .paren, .stacked-symbol').forEach(el => {
+          el.style.fontFamily = 'Untitled1, Noto Sans Ethiopic, sans-serif';
+        });
+      }
+    }
+
+    // Render lyrics
+    function renderLyrics(lyricsTimestamp) {
+      lyricsContainer.innerHTML = '';
+      const preparedLyrics = prepareLyricsData(lyricsTimestamp);
+
+      preparedLyrics.forEach((group, groupIndex) => {
+        const verseSection = document.createElement("div");
+        verseSection.className = "verse-section";
+
+        const verseHeader = document.createElement("div");
+        verseHeader.className = "verse-header";
+
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = group.key;
+        verseHeader.appendChild(titleSpan);
+
+        // Add play button for the entire verse
+        const playButton = document.createElement("button");
+        playButton.className = "play-verse-btn";
+        playButton.textContent = "▶ ተጫውት";
+        playButton.dataset.groupIndex = groupIndex;
+        verseHeader.appendChild(playButton);
+
+        verseSection.appendChild(verseHeader);
+
+        group.data.forEach((segment, segmentIndex) => {
+          const span = renderWord(segment.text);
+          span.dataset.time = segment.time;
+          span.dataset.end = segment.end;
+
+          span.onclick = () => {
+            if (repeatSegment === segment) {
+              repeatSegment = null;
+              span.classList.remove("locked");
+            } else {
+              repeatSegment = segment;
+              document.querySelectorAll('.letter-container').forEach(w => w.classList.remove("locked"));
+              span.classList.add("locked");
+              audio.currentTime = segment.time;
+              audio.play();
+            }
+          };
+          verseSection.appendChild(span);
+          verseSection.appendChild(document.createTextNode(" "));
+        });
+
+        // Add event listener for play button
+        playButton.addEventListener("click", function(e) {
+          e.stopPropagation();
+          playEntireVerse(groupIndex);
+        });
+
+        lyricsContainer.appendChild(verseSection);
+      });
+    }
+
+    // Play entire verse function
+    function playEntireVerse(groupIndex) {
+      const group = pageData[currentPage].lyricsTimestamp[groupIndex];
+      if (!group || group.data.length === 0) return;
+
+      const firstSegment = group.data[0];
+      const lastSegment = group.data[group.data.length - 1];
+
+      // Update play button state
+      document.querySelectorAll('.play-verse-btn').forEach(btn => {
+        btn.classList.remove('playing');
+      });
+      document.querySelector(`.play-verse-btn[data-group-index="${groupIndex}"]`).classList.add('playing');
+
+      // Start playing from the first segment
+      audio.currentTime = firstSegment.time;
+      audio.play();
+
+      // Set up event listener to stop at the end of the last segment
+      const checkEndTime = () => {
+        if (audio.currentTime >= lastSegment.end) {
+          audio.pause();
+          document.querySelector(`.play-verse-btn[data-group-index="${groupIndex}"]`).classList.remove('playing');
+          audio.removeEventListener('timeupdate', checkEndTime);
+        }
+      };
+
+      audio.addEventListener('timeupdate', checkEndTime);
+    }
+
+    // Loop the selected segment
+    audio.addEventListener("timeupdate", () => {
+      if (repeatSegment && audio.currentTime >= repeatSegment.end) {
+        audio.currentTime = repeatSegment.time;
+        audio.play();
+      }
+    });
+
+    // Function to render translations
+    function renderTranslations(translationData) {
+      const container = document.getElementById('translations-container');
+      container.innerHTML = '';
+
+      translationData.forEach((group, groupIndex) => {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'translation-group';
+
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'group-header';
+        groupHeader.textContent = group.key;
+        groupElement.appendChild(groupHeader);
+
+        // Create separate reading containers for each reading item
+        group.data.forEach((item, itemIndex) => {
+          const readingElement = document.createElement('div');
+          readingElement.className = 'reading-container';
+          readingElement.dataset.groupIndex = groupIndex;
+          readingElement.dataset.itemIndex = itemIndex;
+
+          readingElement.innerHTML = `
+            <div class="reading-text">
+              <div class="reading-line">
+                <span class="language-label gz">ግዕ</span>
+                <span class="reading-content">${item.reading.gz}</span>
+              </div>
+              <div class="reading-line">
+                <span class="language-label am">አማ</span>
+                <span class="reading-content">${item.reading.am}</span>
+              </div>
+              <div class="reading-line">
+                <span class="language-label en">ENG</span>
+                <span class="reading-content">${item.reading.en}</span>
+              </div>
+            </div>
+          `;
+
+          // Make the entire container clickable
+          readingElement.style.cursor = 'pointer';
+          readingElement.addEventListener('click', () => {
+            openCommentaryModal(groupIndex, itemIndex, item.commentaries);
+          });
+
+          groupElement.appendChild(readingElement);
+        });
+
+        container.appendChild(groupElement);
+      });
+    }
+
+    // Function to open commentary modal
+    function openCommentaryModal(groupIndex, itemIndex, commentaries) {
+      const modal = document.getElementById('commentary-modal');
+      const modalBody = document.getElementById('modal-body');
+
+      // Create modal body if it doesn't exist
+      if (!modalBody) {
+        const modalContent = document.querySelector('.modal-content');
+        const modalBodyElement = document.createElement('div');
+        modalBodyElement.id = 'modal-body';
+        modalContent.appendChild(modalBodyElement);
+      }
+
+      let commentariesHTML = '';
+
+      commentaries.forEach((commentary, commIndex) => {
+        commentariesHTML += `
+          <div class="commentary-item">
+            <div class="language-tabs">
+              <button class="language-tab active" data-lang="am">አማርኛ</button>
+              <button class="language-tab" data-lang="en">English</button>
+              <button class="language-tab" data-lang="gz">ግዕዝ</button>
+            </div>
+
+            <div class="language-content active" data-lang="am">
+              <div class="commentary-reading">${commentary.reading.am}</div>
+            </div>
+            <div class="language-content" data-lang="en">
+              <div class="commentary-reading">${commentary.reading.en}</div>
+            </div>
+            <div class="language-content" data-lang="gz">
+              <div class="commentary-reading">${commentary.reading.gz}</div>
+            </div>
+
+            <div class="author-info">
+              <div class="author-name">${commentary.author.name.am}</div>
+              <div class="author-title">${commentary.author.title.am}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      const modalBodyElement = document.getElementById('modal-body') || document.createElement('div');
+      modalBodyElement.innerHTML = commentariesHTML;
+      modal.style.display = 'block';
+
+      // Add tab functionality
+      modalBodyElement.querySelectorAll('.language-tab').forEach(tab => {
+        tab.addEventListener('click', function () {
+          const lang = this.dataset.lang;
+          const tabs = this.parentElement.querySelectorAll('.language-tab');
+          const contents = this.parentElement.nextElementSibling.parentElement.querySelectorAll('.language-content');
+
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+
+          this.classList.add('active');
+          contents.forEach(c => {
+            if (c.dataset.lang === lang) {
+              c.classList.add('active');
+            }
+          });
+        });
+      });
+    }
+
+    // Close modal functionality
+    document.querySelector('.close-modal').addEventListener('click', function () {
+      document.getElementById('commentary-modal').style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function (event) {
+      const modal = document.getElementById('commentary-modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Load custom font
+    const font = new FontFace('Untitled1', 'url(./ZemaYared.ttf)');
+    font.load().then(function (loadedFont) {
+      document.fonts.add(loadedFont);
+      // Apply font to all existing elements
+      document.querySelectorAll('.square, .paren, .stacked-symbol').forEach(el => {
+        el.style.fontFamily = 'Untitled1, Noto Sans Ethiopic, sans-serif';
+      });
+    }).catch(function (error) {
+      const errorDiv = document.createElement("div");
+      errorDiv.innerHTML = `
+        <h3>Font Loading Error</h3>
+        <p>Could not load the Untitled1 font: ${error.message}</p>
+      `;
+      errorDiv.style.marginTop = "20px";
+      errorDiv.style.padding = "15px";
+      errorDiv.style.backgroundColor = "#ffe6e6";
+      errorDiv.style.borderRadius = "5px";
+      const fontTest = document.createElement("div");
+      fontTest.classList.add("font-test");
+      fontTest.appendChild(errorDiv);
+      document.body.appendChild(fontTest);
+    });
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      init();
+    });
+  </script>
+
+</body>
+
+</html>
