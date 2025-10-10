@@ -507,181 +507,297 @@
     </footer>
 
     <script>
-        // Sample data for the two learning sequences
-        // First sequence is an array of arrays (rows)
-        const firstSequenceHaHu = [
-            // ሀ-series
-            [
-                {
-                    letter: "ሀ",
-                    voice: "sounds/letters/ha.mp3",
-                    meaning: {
-                        gz: "ሀልዎቱ ለአብ እምቅድመ ዓለም",
-                        en: "The existence of the Father is before the world",
-                        am: "የአብ መኖር ከዓለም በፊት ነው",
-                    },
-                },
-                {
-                    letter: "ሁ",
-                    voice: "sounds/letters/hu.mp3",
-                    meaning: {
-                        gz: "ኪያሁ ተወከሉ",
-                        en: "They believed in Him",
-                        am: "በእርሱ (በእግዚአብሔር) ታመኑ",
-                    },
-                },
-                {
-                    letter: "ሂ",
-                    voice: "sounds/letters/hi.mp3",
-                    meaning: {
-                        gz: "አስተይዎ ብሂዐ",
-                        en: "The Jews gave Him vinegar",
-                        am: "አይሁድ ጌታን ሖምጣጤ አጠጡት",
-                    },
-                },
-                {
-                    letter: "ሃ",
-                    voice: "sounds/letters/hae.mp3",
-                    meaning: {
-                        gz: "ሃሌ ሉያ",
-                        en: "He who existed before the world continues beyond it",
-                        am: "ቅድመ ዓለም የነበረ ዓለምን አሳልፎ የሚኖር",
-                    },
-                },
-                {
-                    letter: "ሄ",
-                    voice: "sounds/letters/he.mp3",
-                    meaning: {
-                        gz: "በኲለሄ ሀሎ",
-                        en: "God is present in all places and times",
-                        am: "እግዚአብሔር በሁሉ ቦታ እና ጊዜ አለ",
-                    },
-                },
-                {
-                    letter: "ህ",
-                    voice: "sounds/letters/hiu.mp3",
-                    meaning: {
-                        gz: "ህልው እግዚአብሔር",
-                        en: "God exists",
-                        am: "እግዚአብሔር አለ",
-                    },
-                },
-                {
-                    letter: "ሆ",
-                    voice: "sounds/letters/ho.mp3",
-                    meaning: {
-                        gz: "",
-                        en: "",
-                        am: "",
-                    },
-                },
+        // Centralized data storage
+        const letterData = {
+            // First sequence: Ha series
+            "ሀ": {
+                voice: "sounds/letters/ha.mp3",
+                meaning: {
+                    gz: "ሀልዎቱ ለአብ እምቅድመ ዓለም",
+                    en: "The existence of the Father is before the world",
+                    am: "የአብ መኖር ከዓለም በፊት ነው",
+                }
+            },
+            "ሁ": {
+                voice: "sounds/letters/hu.mp3",
+                meaning: {
+                    gz: "ኪያሁ ተወከሉ",
+                    en: "They believed in Him",
+                    am: "በእርሱ (በእግዚአብሔር) ታመኑ",
+                }
+            },
+            "ሂ": {
+                voice: "sounds/letters/hi.mp3",
+                meaning: {
+                    gz: "አስተይዎ ብሂዐ",
+                    en: "The Jews gave Him vinegar",
+                    am: "አይሁድ ጌታን ሖምጣጤ አጠጡት",
+                }
+            },
+            "ሃ": {
+                voice: "sounds/letters/hae.mp3",
+                meaning: {
+                    gz: "ሃሌ ሉያ",
+                    en: "He who existed before the world continues beyond it",
+                    am: "ቅድመ ዓለም የነበረ ዓለምን አሳልፎ የሚኖር",
+                }
+            },
+            "ሄ": {
+                voice: "sounds/letters/he.mp3",
+                meaning: {
+                    gz: "በኲለሄ ሀሎ",
+                    en: "God is present in all places and times",
+                    am: "እግዚአብሔር በሁሉ ቦታ እና ጊዜ አለ",
+                }
+            },
+            "ህ": {
+                voice: "sounds/letters/hiu.mp3",
+                meaning: {
+                    gz: "ህልው እግዚአብሔር",
+                    en: "God exists",
+                    am: "እግዚአብሔር አለ",
+                }
+            },
+            "ሆ": {
+                voice: "sounds/letters/ho.mp3",
+                meaning: {
+                    gz: "",
+                    en: "",
+                    am: "",
+                }
+            },
+            // Le series
+            "ለ": {
+                voice: "sounds/letters/le.mp3",
+                meaning: {
+                    gz: "ለብሰ ሥጋ ዙኣነ",
+                    en: "God took our flesh",
+                    am: "እግዚአብሔር የእኛን ሥጋ ተዋሐደ",
+                }
+            },
+            "ሉ": {
+                voice: "sounds/letters/lu.mp3",
+                meaning: {
+                    gz: "ሣህሉ ለእግዚአብሔር",
+                    en: "The mercy of God",
+                    am: "የእግዚአብሔር ይቅርታ",
+                }
+            },
+            "ሊ": {
+                voice: "sounds/letters/li.mp3",
+                meaning: {
+                    gz: "ከሃሊ እግዚአብሔር",
+                    en: "God is Almighty",
+                    am: "እግዚአብሔር ሁሉን ቻይ ነው",
+                }
+            },
+            "ላ": {
+                voice: "sounds/letters/la.mp3",
+                meaning: {
+                    gz: "ላሜድ ልዑል እግዚአብሔር",
+                    en: "God is the Most High",
+                    am: "እግዚአብሔር ልዑል ነው",
+                }
+            },
+            "ሌ": {
+                voice: "sounds/letters/le.mp3",
+                meaning: {
+                    gz: "መቅለሌ ዕጹብ",
+                    en: "God who removes affliction",
+                    am: "ጭንቀትን የሚያቀል እግዚአብሔር",
+                }
+            },
+            "ል": {
+                voice: "sounds/letters/lih.mp3",
+                meaning: {
+                    gz: "መስቀል ዘወልደ አብ",
+                    en: "The cross of the Son of the Father",
+                    am: "የአብ ልጅ መስቀል",
+                }
+            },
+            "ሎ": {
+                voice: "sounds/letters/lo.mp3",
+                meaning: {
+                    gz: "ዘሀሎ እምቅድም",
+                    en: "God who existed before the world",
+                    am: "ቅድመ ዓለም የነበረ እግዚአብሔር",
+                }
+            },
+            // Second sequence
+            "አ": {
+                voice: "sounds/letters/a.mp3",
+                meaning: {
+                    gz: "አአኲቶ ወእሴብሖ ለእግዙአብሔር። ",
+                    en: "I will always praise God.",
+                    am: "እግዙአብሔርን ፈጽሞ አመሰግነዋለሁ።"
+                }
+            },
+            "ቡ": {
+                voice: "sounds/letters/bu.mp3",
+                meaning: {
+                    gz: "ጥበቡ ለአብ። ",
+                    en: "The wisdom of the Father",
+                    am: "የአብ ጥበቡ"
+                }
+            },
+            "ጊ": {
+                voice: "sounds/letters/gi.mp3",
+                meaning: {
+                    gz: "ጊዛ ገቢር ለእግዙአብሔር።",
+                    en: "",
+                    am: ""
+                }
+            },
+            "ዳ": {
+                voice: "sounds/letters/da.mp3",
+                meaning: {
+                    gz: "ዳሌጥ ድልው እግዙአብሔር",
+                    en: "",
+                    am: ""
+                }
+            },
+            "ው": {
+                voice: "sounds/letters/wu.mp3",
+                meaning: {
+                    gz: "ሥግው ቃል",
+                    en: "",
+                    am: "ሰው የሆነ አምላክ"
+                }
+            },
+            "ዞ": {
+                voice: "sounds/letters/zo.mp3",
+                meaning: {
+                    gz: "",
+                    en: "",
+                    am: ""
+                }
+            },
+            "በ": {
+                voice: "sounds/letters/be.mp3",
+                meaning: {
+                    gz: "በትሕትናሁ ወረደ ለቤዛ ኲሉ ዓለም",
+                    en: "To save the whole world, He came down in humility",
+                    am: "ዓለምን ሁሉ ለማዳን በትሕትናው ሰው ሆነ"
+                }
+            },
+            "ጉ": {
+                voice: "sounds/letters/gu.mp3",
+                meaning: {
+                    gz: "ለአስካለ ሕይወት ሐረጉ",
+                    en: "",
+                    am: ""
+                }
+            },
+            "ዲ": {
+                voice: "sounds/letters/di.mp3",
+                meaning: {
+                    gz: "ቃለ ዓዋዲ።",
+                    en: "",
+                    am: ""
+                }
+            },
+            "ዌ": {
+                voice: "sounds/letters/we.mp3",
+                meaning: {
+                    gz: "ዜናዌ ትፍሥሕት",
+                    en: "",
+                    am: "ደስታን የሚናገር"
+                }
+            },
+            "ዝ": {
+                voice: "sounds/letters/ze.mp3",
+                meaning: {
+                    gz: "አግአዝ ለአዳም",
+                    en: "",
+                    am: "አዳምን ነጻ አወጣው"
+                }
+            },
+            "ዣ": {
+                voice: "sounds/letters/zha.mp3",
+                meaning: {
+                    gz: "ዣ base (mock)",
+                    en: "Zha (mock)",
+                    am: "ዣ ማክ"
+                }
+            },
+            "ገ": {
+                voice: "sounds/letters/ge.mp3",
+                meaning: {
+                    gz: "ገ base (mock)",
+                    en: "Ge (mock)",
+                    am: "ገ ማክ"
+                }
+            },
+            "ዱ": {
+                voice: "sounds/letters/du.mp3",
+                meaning: {
+                    gz: "ዱ base (mock)",
+                    en: "Du (mock)",
+                    am: "ዱ ማክ"
+                }
+            },
+            "ሂ": {
+                voice: "sounds/letters/hi.mp3",
+                meaning: {
+                    gz: "ሂ base (mock)",
+                    en: "Hi (mock)",
+                    am: "ሂ ማክ"
+                }
+            },
+            "ዋ": {
+                voice: "sounds/letters/wa.mp3",
+                meaning: {
+                    gz: "ዋ base (mock)",
+                    en: "Wa (mock)",
+                    am: "ዋ ማክ"
+                }
+            },
+            "ዜ": {
+                voice: "sounds/letters/ze2.mp3",
+                meaning: {
+                    gz: "ዜ base (mock)",
+                    en: "Ze₂ (mock)",
+                    am: "ዜ ማክ"
+                }
+            },
+            "ዥ": {
+                voice: "sounds/letters/zh.mp3",
+                meaning: {
+                    gz: "ዥ base (mock)",
+                    en: "Zh (mock)",
+                    am: "ዥ ማክ"
+                }
+            },
+            "ጦ": {
+                voice: "sounds/letters/to.mp3",
+                meaning: {
+                    gz: "ጦ base (mock)",
+                    en: "To (mock)",
+                    am: "ጦ ማክ"
+                }
+            }
+        };
+
+        // Letter sequences organized in different places
+        const sequenceData = {
+            // First sequence: array of arrays (rows)
+            firstSequenceHaHu: [
+                // ሀ-series
+                ["ሀ", "ሁ", "ሂ", "ሃ", "ሄ", "ህ", "ሆ"],
+                // ለ-series
+                ["ለ", "ሉ", "ሊ", "ላ", "ሌ", "ል", "ሎ"]
             ],
 
-            // ለ-series
-            [
-                {
-                    letter: "ለ",
-                    voice: "sounds/letters/le.mp3",
-                    meaning: {
-                        gz: "ለብሰ ሥጋ ዙኣነ",
-                        en: "God took our flesh",
-                        am: "እግዚአብሔር የእኛን ሥጋ ተዋሐደ",
-                    },
-                },
-                {
-                    letter: "ሉ",
-                    voice: "sounds/letters/lu.mp3",
-                    meaning: {
-                        gz: "ሣህሉ ለእግዚአብሔር",
-                        en: "The mercy of God",
-                        am: "የእግዚአብሔር ይቅርታ",
-                    },
-                },
-                {
-                    letter: "ሊ",
-                    voice: "sounds/letters/li.mp3",
-                    meaning: {
-                        gz: "ከሃሊ እግዚአብሔር",
-                        en: "God is Almighty",
-                        am: "እግዚአብሔር ሁሉን ቻይ ነው",
-                    },
-                },
-                {
-                    letter: "ላ",
-                    voice: "sounds/letters/la.mp3",
-                    meaning: {
-                        gz: "ላሜድ ልዑል እግዚአብሔር",
-                        en: "God is the Most High",
-                        am: "እግዚአብሔር ልዑል ነው",
-                    },
-                },
-                {
-                    letter: "ሌ",
-                    voice: "sounds/letters/le.mp3",
-                    meaning: {
-                        gz: "መቅለሌ ዕጹብ",
-                        en: "God who removes affliction",
-                        am: "ጭንቀትን የሚያቀል እግዚአብሔር",
-                    },
-                },
-                {
-                    letter: "ል",
-                    voice: "sounds/letters/lih.mp3",
-                    meaning: {
-                        gz: "መስቀል ዘወልደ አብ",
-                        en: "The cross of the Son of the Father",
-                        am: "የአብ ልጅ መስቀል",
-                    },
-                },
-                {
-                    letter: "ሎ",
-                    voice: "sounds/letters/lo.mp3",
-                    meaning: {
-                        gz: "ዘሀሎ እምቅድም",
-                        en: "God who existed before the world",
-                        am: "ቅድመ ዓለም የነበረ እግዚአብሔር",
-                    },
-                },
-            ],
-        ];
-
-
-        // Second sequence is a flat array
-        const secondSequenceABu = [
-            // row 1 (exact sequence you gave)
-            [
-                { letter: "አ", voice: "sounds/letters/a.mp3", meaning: { gz: "አ base (mock)", en: "A (mock)", am: "አ ማክ" } },
-                { letter: "ቡ", voice: "sounds/letters/bu.mp3", meaning: { gz: "ቡ base (mock)", en: "Bu (mock)", am: "ቡ ማክ" } },
-                { letter: "ጊ", voice: "sounds/letters/gi.mp3", meaning: { gz: "ጊ base (mock)", en: "Gi (mock)", am: "ጊ ማክ" } },
-                { letter: "ዳ", voice: "sounds/letters/da.mp3", meaning: { gz: "ዳ base (mock)", en: "Da (mock)", am: "ዳ ማክ" } },
-                { letter: "ሄ", voice: "sounds/letters/he.mp3", meaning: { gz: "ሄ base (mock)", en: "He (mock)", am: "ሄ ማክ" } },
-                { letter: "ው", voice: "sounds/letters/wu.mp3", meaning: { gz: "ው base (mock)", en: "Wu (mock)", am: "ው ማክ" } },
-                { letter: "ዞ", voice: "sounds/letters/zo.mp3", meaning: { gz: "ዞ base (mock)", en: "Zo (mock)", am: "ዞ ማክ" } }
-            ],
-
-            // row 2 (exact sequence you gave)
-            [
-                { letter: "በ", voice: "sounds/letters/be.mp3", meaning: { gz: "በ base (mock)", en: "Be (mock)", am: "በ ማክ" } },
-                { letter: "ጉ", voice: "sounds/letters/gu.mp3", meaning: { gz: "ጉ base (mock)", en: "Gu (mock)", am: "ጉ ማክ" } },
-                { letter: "ዲ", voice: "sounds/letters/di.mp3", meaning: { gz: "ዲ base (mock)", en: "Di (mock)", am: "ዲ ማክ" } },
-                { letter: "ሃ", voice: "sounds/letters/hae.mp3", meaning: { gz: "ሃ base (mock)", en: "Hae (mock)", am: "ሃ ማክ" } },
-                { letter: "ዌ", voice: "sounds/letters/we.mp3", meaning: { gz: "ዌ base (mock)", en: "We (mock)", am: "ዌ ማክ" } },
-                { letter: "ዝ", voice: "sounds/letters/ze.mp3", meaning: { gz: "ዝ base (mock)", en: "Ze (mock)", am: "ዝ ማክ" } },
-                { letter: "ዣ", voice: "sounds/letters/zha.mp3", meaning: { gz: "ዣ base (mock)", en: "Zha (mock)", am: "ዣ ማክ" } }
-            ],
-
-            // row 3 (exact sequence you gave)
-            [
-                { letter: "ገ", voice: "sounds/letters/ge.mp3", meaning: { gz: "ገ base (mock)", en: "Ge (mock)", am: "ገ ማክ" } },
-                { letter: "ዱ", voice: "sounds/letters/du.mp3", meaning: { gz: "ዱ base (mock)", en: "Du (mock)", am: "ዱ ማክ" } },
-                { letter: "ሂ", voice: "sounds/letters/hi.mp3", meaning: { gz: "ሂ base (mock)", en: "Hi (mock)", am: "ሂ ማክ" } },
-                { letter: "ዋ", voice: "sounds/letters/wa.mp3", meaning: { gz: "ዋ base (mock)", en: "Wa (mock)", am: "ዋ ማክ" } },
-                { letter: "ዜ", voice: "sounds/letters/ze2.mp3", meaning: { gz: "ዜ base (mock)", en: "Ze₂ (mock)", am: "ዜ ማክ" } },
-                { letter: "ዥ", voice: "sounds/letters/zh.mp3", meaning: { gz: "ዥ base (mock)", en: "Zh (mock)", am: "ዥ ማክ" } },
-                { letter: "ጦ", voice: "sounds/letters/to.mp3", meaning: { gz: "ጦ base (mock)", en: "To (mock)", am: "ጦ ማክ" } }
-            ],
-
-        ]
+            // Second sequence: array of arrays (rows)
+            secondSequenceABu: [
+                // row 1
+                ["አ", "ቡ", "ጊ", "ዳ", "ሄ", "ው", "ዞ"],
+                // row 2
+                ["በ", "ጉ", "ዲ", "ሃ", "ዌ", "ዝ", "ዣ"],
+                // row 3
+                ["ገ", "ዱ", "ሂ", "ዋ", "ዜ", "ዥ", "ጦ"]
+            ]
+        };
 
         // DOM elements
         const welcomeScreen = document.getElementById('welcomeScreen');
@@ -706,8 +822,7 @@
 
         // Current state
         let currentSequence = 0;
-        let currentLetterIndex = -1;
-        let currentRowIndex = -1;
+        let currentLetter = "";
         let isRecording = false;
         let mediaRecorder;
         let audioChunks = [];
@@ -754,13 +869,8 @@
         // Play sound
         playSoundBtn.addEventListener('click', () => {
             // In a real implementation, this would play the actual sound file
-            let currentLetterData;
-            if (currentSequence === 0) {
-                currentLetterData = firstSequenceHaHu[currentRowIndex][currentLetterIndex];
-            } else {
-                currentLetterData = secondSequenceABu[currentLetterIndex];
-            }
-            alert('Playing pronunciation audio: ' + currentLetterData.voice);
+            const letterDataItem = letterData[currentLetter];
+            alert('Playing pronunciation audio: ' + letterDataItem.voice);
         });
 
         // Recording functionality
@@ -771,61 +881,35 @@
         function renderLetters() {
             lettersContainer.innerHTML = '';
 
+            let sequence;
             if (currentSequence === 0) {
-                // First sequence: array of arrays (rows)
-                firstSequenceHaHu.forEach((row, rowIndex) => {
-                    const rowElement = document.createElement('div');
-                    rowElement.className = 'letter-row';
-
-                    row.forEach((letterData, letterIndex) => {
-                        const letterCard = document.createElement('div');
-                        letterCard.className = 'letter-card';
-                        letterCard.innerHTML = `
-                            <div class="letter">${letterData.letter}</div>
-                            <div class="letter-sound">${getSoundName(letterData.voice)}</div>
-                        `;
-
-                        letterCard.addEventListener('click', () => {
-                            currentRowIndex = rowIndex;
-                            currentLetterIndex = letterIndex;
-                            showLetterModal(letterData);
-                        });
-
-                        rowElement.appendChild(letterCard);
-                    });
-
-                    lettersContainer.appendChild(rowElement);
-                });
+                sequence = sequenceData.firstSequenceHaHu;
             } else {
-                // Second sequence: flat array
+                sequence = sequenceData.secondSequenceABu;
+            }
+
+            sequence.forEach(row => {
                 const rowElement = document.createElement('div');
                 rowElement.className = 'letter-row';
 
-                secondSequenceABu.forEach((row, rowIndex) => {
-                    const rowElement = document.createElement('div');
-                    rowElement.className = 'letter-row';
+                row.forEach(letter => {
+                    const letterCard = document.createElement('div');
+                    letterCard.className = 'letter-card';
+                    letterCard.innerHTML = `
+                        <div class="letter">${letter}</div>
+                        <div class="letter-sound">${getSoundName(letterData[letter].voice)}</div>
+                    `;
 
-                    row.forEach((letterData, letterIndex) => {
-                        const letterCard = document.createElement('div');
-                        letterCard.className = 'letter-card';
-                        letterCard.innerHTML = `
-                            <div class="letter">${letterData.letter}</div>
-                            <div class="letter-sound">${getSoundName(letterData.voice)}</div>
-                        `;
-
-                        letterCard.addEventListener('click', () => {
-                            currentRowIndex = rowIndex;
-                            currentLetterIndex = letterIndex;
-                            showLetterModal(letterData);
-                        });
-
-                        rowElement.appendChild(letterCard);
+                    letterCard.addEventListener('click', () => {
+                        currentLetter = letter;
+                        showLetterModal(letter);
                     });
 
-                    lettersContainer.appendChild(rowElement);
+                    rowElement.appendChild(letterCard);
                 });
+
                 lettersContainer.appendChild(rowElement);
-            }
+            });
         }
 
         function getSoundName(voicePath) {
@@ -835,11 +919,12 @@
             return filename.replace('.mp3', '');
         }
 
-        function showLetterModal(letterData) {
-            modalLetter.textContent = letterData.letter;
-            meaningGz.textContent = letterData.meaning.gz;
-            meaningEn.textContent = letterData.meaning.en;
-            meaningAm.textContent = letterData.meaning.am;
+        function showLetterModal(letter) {
+            const letterDataItem = letterData[letter];
+            modalLetter.textContent = letter;
+            meaningGz.textContent = letterDataItem.meaning.gz;
+            meaningEn.textContent = letterDataItem.meaning.en;
+            meaningAm.textContent = letterDataItem.meaning.am;
             letterModal.style.display = 'flex';
         }
 
