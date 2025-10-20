@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geez-Amharic-English Verb Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: white;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .app-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .verbtype-filter {
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .verbtype-btn {
+            padding: 8px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .verbtype-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .word-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .word-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .word-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .word-verbtype {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .word-geez {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .word-amharic {
+            font-size: 18px;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+
+        .word-english {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .quiz-option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .quiz-option.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .quiz-question {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-progress {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .score-display {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .learning-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .learning-verbtype {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .learning-geez {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .learning-amharic {
+            font-size: 28px;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .learning-english {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .achievement {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement.unlocked {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .verb-conjugation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .verb-conjugation div {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Geez-Amharic-English Verb Quiz</h1>
+            <p class="app-description">Learn and test your knowledge of Geez, Amharic, and English verbs</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-button active" data-tab="words">Verb List</button>
+            <button class="tab-button" data-tab="learn">Learning Mode</button>
+            <button class="tab-button" data-tab="quiz">Quiz</button>
+            <button class="tab-button" data-tab="progress">Progress</button>
+        </div>
+
+        <!-- Verb List Tab -->
+        <div id="words" class="tab-content active">
+            <h2>Verb List</h2>
+            <p>Browse through all the verbs in your vocabulary list. Filter by verb type:</p>
+
+            <div class="verbtype-filter" id="verbtypeFilter">
+                <!-- Verb type buttons will be dynamically inserted here -->
+            </div>
+
+            <div class="word-list" id="wordListContainer">
+                <!-- Verbs will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Learning Mode Tab -->
+        <div id="learn" class="tab-content">
+            <h2>Learning Mode</h2>
+            <p>Study verbs one by one with spaced repetition.</p>
+
+            <div class="verbtype-filter" id="learnVerbtypeFilter">
+                <!-- Verb type buttons for learning mode -->
+            </div>
+
+            <div class="learning-card">
+                <div class="learning-verbtype" id="learnVerbtype">Verb Type</div>
+                <div class="learning-geez" id="learnGeez">ፊደል</div>
+                <div class="learning-amharic" id="learnAmharic">ፊደል</div>
+                <div class="learning-english" id="learnEnglish">Letter/Alphabet</div>
+                <div class="verb-conjugation hidden" id="verbConjugation">
+                    <!-- Verb conjugation will be shown here for verbs -->
+                </div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" id="prevWord">Previous</button>
+                <button class="btn" id="nextWord">Next</button>
+            </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content">
+            <h2>Verb Quiz</h2>
+            <p>Test your knowledge with multiple-choice questions.</p>
+
+            <div class="verbtype-filter" id="quizVerbtypeFilter">
+                <!-- Verb type buttons for quiz mode -->
+            </div>
+
+            <div class="quiz-question" id="quizQuestion">What is the English translation of this Geez verb?</div>
+            <div class="quiz-options" id="quizOptions">
+                <!-- Quiz options will be dynamically inserted here -->
+            </div>
+            <div class="feedback hidden" id="quizFeedback"></div>
+            <div class="quiz-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quizProgress"></div>
+                </div>
+                <div class="score-display">Score: <span id="quizScore">0</span>/<span id="totalQuestions">0</span></div>
+                <button class="btn" id="nextQuestion">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Progress Tab -->
+        <div id="progress" class="tab-content">
+            <h2>Your Progress</h2>
+            <p>Track your learning journey and achievements.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="wordsLearned">0</div>
+                    <div class="stat-label">Verbs Learned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="quizzesTaken">0</div>
+                    <div class="stat-label">Quizzes Taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="correctAnswers">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;">Achievements</h3>
+            <div id="achievementsList">
+                <!-- Achievements will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced vocabulary data structure with verb types
+        const vocabulary = [
+            { geez: "ሀልሀ", amharic: "ወደረ", english: "to be heavy", verbType: "ቀተ" },
+            { geez: "ለሕሐ", amharic: "ቀዳ(የውኃ)", english: "to draw (water)", verbType: "ክህ" },
+            { geez: "ላሕልሐ", amharic: "ራሰ", english: "to be lazy", verbType: "ማህ" },
+            { geez: "ለስሐ", amharic: "አልጫ ኾነ", english: "to be arrogant", verbType: "ቀተ" },
+            { geez: "ለቅሐ", amharic: "አበደረ", english: "to make heavy", verbType: "ቀደ" },
+            { geez: "ለብሐ", amharic: "ሠራ(የሽከላ ብቻ)", english: "to work (only weaving)", verbType: "ቀተ" },
+            { geez: "ለትሐ", amharic: "ተጐነጨ", english: "to be angry", verbType: "ማህ" },
+            { geez: "ሎሐ", amharic: "ጻፈ", english: "to write", verbType: "ቀተ" },
+            { geez: "ለጥሐ", amharic: "ገበረ", english: "to do/make", verbType: "ቀደ" },
+            { geez: "መሕምሐ", amharic: "አፈረሰ", english: "to destroy", verbType: "ተን" },
+            { geez: "መልኀ", amharic: "መዘዘ", english: "to command", verbType: "ቀተ" },
+            { geez: "መልሐ", amharic: "አጣፈጠ", english: "to cause to stumble", verbType: "ቀደ" },
+            { geez: "መስሐ", amharic: "ምሳ አደረገ", english: "to make dinner", verbType: "ቀተ" },
+            { geez: "መርሐ", amharic: "መራ", english: "to lead", verbType: "ቀተ" },
+            { geez: "ሞርቅሐ", amharic: "ላጠ", english: "to lick", verbType: "ጦመ" },
+            { geez: "ሞቅሐ", amharic: "አሰረ", english: "to tie", verbType: "ጦመ" },
+            { geez: "መትሀ", amharic: "ሣሣ፣ቀጠነ፣ረቀቀ", english: "to be thin/slender", verbType: "ቀተ" },
+            { geez: "መንዝሐ", amharic: "ተደላደለ", english: "to be mixed", verbType: "ተም" },
+            { geez: "መድሐ", amharic: "ፈጨ", english: "to cut", verbType: "ቀተ" },
+            { geez: "ሞጥሐ", amharic: "ለበሰ", english: "to wear", verbType: "ጦመ" },
+            { geez: "ሰርሐ", amharic: "ሠራ", english: "to work", verbType: "ቀተ" },
+            { geez: "ሠርሐ", amharic: "አቅናና፣አብራራ", english: "to encourage/enlighten", verbType: "ቀደ" },
+            { geez: "ሣርኀ", amharic: "አበራ", english: "to shine", verbType: "ባረ" },
+            { geez: "ሰብሐ", amharic: "አመሰገነ", english: "to praise", verbType: "ቀደ" },
+            { geez: "ሠብሐ", amharic: "ሰብኾነ", english: "to become wise", verbType: "ቀተ" },
+            { geez: "ሰንሐ", amharic: "በራ ኾነ", english: "to become bright", verbType: "ቀተ" },
+            { geez: "ሰይሐ", amharic: "ታመመ", english: "to be sick", verbType: "ቀደ" },
+            { geez: "ሰይሐ", amharic: "ወገጠ", english: "to be tired", verbType: "ቀተ/ቀደ" },
+            { geez: "ሰጥሐ", amharic: "አሳጣ፣ዘረጋ", english: "to spread out", verbType: "ቀተ" },
+            { geez: "ሰፍሐ", amharic: "ሰፋ", english: "to be wide", verbType: "ቀተ" },
+            { geez: "ረምሐ", amharic: "ወጋ", english: "to hit", verbType: "ቀተ" },
+            { geez: "ረስሐ", amharic: "ጎሰቆለ", english: "to break", verbType: "ቀተ" },
+            { geez: "ረቅሐ", amharic: "ጋረጠ", english: "to be far", verbType: "ቀተ" },
+            { geez: "ረብሐ", amharic: "ረባ", english: "to be many", verbType: "ቀተ" },
+            { geez: "ረውሐ", amharic: "ቀደደ", english: "to precede", verbType: "ቀደ" },
+            { geez: "ሮሐ", amharic: "ወለወለ", english: "to be soft", verbType: "ቀተ/ቀደ" },
+            { geez: "ቃሕቅሐ", amharic: "አሰምቶ ተናገረ፣ተንቆራቆሰ", english: "to murmur/complain", verbType: "ማህ" },
+            { geez: "ቈልሐ", amharic: "ፍሬ ያዘ", english: "to bear fruit", verbType: "ቀደ" },
+            { geez: "ቀምሐ", amharic: "አፈራ", english: "to be red", verbType: "ቀተ" },
+            { geez: "ቀርሐ", amharic: "ጨለጠ", english: "to be dark", verbType: "ቀደ" },
+            { geez: "ቃርሐ", amharic: "ተኰሰ", english: "to burn", verbType: "ባረ" },
+            { geez: "ቄቅሐ", amharic: "ፈተገ", english: "to be narrow", verbType: "ሴሰ" },
+            { geez: "ቄሐ", amharic: "ቀላ", english: "to be easy", verbType: "ቀተ" },
+            { geez: "ቀድሐ", amharic: "ቀዳ", english: "to be holy", verbType: "ቀተ" },
+            { geez: "ባኅብኀ", amharic: "ከረፋ፣ቀረና", english: "to be rough", verbType: "ተን" },
+            { geez: "በኍበኈ", amharic: "ሸተተ፣በሰበሰ", english: "to scatter", verbType: "ተን" },
+            { geez: "በልኀ", amharic: "ተሳለ(ስለት ኾነ)", english: "to be eaten", verbType: "ቀተ" },
+            { geez: "ባልሐ", amharic: "አዳነ", english: "to save", verbType: "ባረ" },
+            { geez: "በርሀ", amharic: "ብሩህ፣ብርሃን ኾነ", english: "to be bright", verbType: "ቀተ" },
+            { geez: "በርሐ", amharic: "በራ ኾነ", english: "to shine", verbType: "ቀተ" },
+            { geez: "በዝኀ", amharic: "በዛ", english: "to be many", verbType: "ቀተ" },
+            { geez: "በጥሐ", amharic: "በጣ", english: "to lack", verbType: "ቀተ" },
+            { geez: "በጽሐ", amharic: "ደረሰ", english: "to arrive", verbType: "ቀተ" },
+            { geez: "ታሕታሐ", amharic: "ፈላ", english: "to boil", verbType: "ማህ" },
+            { geez: "ተመክሐ", amharic: "ታበየ፣ኮራ፣ተመካ", english: "to be proud/trust", verbType: "ቀደ" },
+            { geez: "ቶስሐ", amharic: "ጨመረ", english: "to add", verbType: "ጦመ" },
+            { geez: "ተራኅርኀ", amharic: "ራራ፣ቸረ ኾነ", english: "to be loose", verbType: "ማህ" },
+            { geez: "ተቃድሐ", amharic: "ተደነባበረ", english: "to be scattered", verbType: "ቀተ" },
+            { geez: "ተበውሐ", amharic: "ሠለጠነ", english: "to be purified", verbType: "ቀደ" },
+            { geez: "ተንሀ", amharic: "አገመ", english: "to count", verbType: "ቀደ" },
+            { geez: "ተወፅኀ", amharic: "ተፈጨ", english: "to be cut", verbType: "ቀደ" },
+            { geez: "ተዋህውኀ", amharic: "ተመላለሰ", english: "to be turned around", verbType: "ማህ" },
+            { geez: "ተየውሀ", amharic: "የዋህ ኾነ", english: "to be gentle", verbType: "ቀደ" },
+            { geez: "ተይሀ", amharic: "ቀላወጠ", english: "to be changed", verbType: "ቀተ/ቀደ" },
+            { geez: "ተጋህግሀ", amharic: "ክፍት ክፍት አለ", english: "to be open", verbType: "ማህ" },
+            { geez: "ተጋውሐ", amharic: "ጐረቢት ኾነ", english: "to be bent", verbType: "ቀተ" },
+            { geez: "ተግሀ", amharic: "ተጋ", english: "to be tired", verbType: "ቀተ" },
+            { geez: "ተጻብሐ", amharic: "እንዴት አደርክ ተባባለ", english: "to be greeted", verbType: "ቀተ" },
+            { geez: "ተፈሥሐ", amharic: "ደስ ተሰኘ", english: "to be happy", verbType: "ቀደ" },
+            { geez: "ናሕንሐ", amharic: "ትርፍርፍ አለ", english: "to tremble", verbType: "ማህ" },
+            { geez: "ነስሐ", amharic: "ተጸጸተ", english: "to repent", verbType: "ቀደ" },
+            { geez: "ነስኀ", amharic: "ሸተተ፣ከረፋ", english: "to be scattered", verbType: "ቀደ" },
+            { geez: "ነቅሀ", amharic: "ነቃ", english: "to wake up", verbType: "ቀተ" },
+            { geez: "ነብሐ", amharic: "ጮኸ", english: "to shout", verbType: "ቀተ" },
+            { geez: "ኖኀ", amharic: "ረዘመ", english: "to be long", verbType: "ቀተ" },
+            { geez: "ነዝሀ", amharic: "ረጨ", english: "to be wet", verbType: "ቀተ" },
+            { geez: "ነድሐ", amharic: "ነዳ", english: "to be dry", verbType: "ቀተ" },
+            { geez: "ነግሀ", amharic: "ነጋ", english: "to dawn", verbType: "ቀተ" },
+            { geez: "ነጽሐ", amharic: "ንጹሕ ኾነ", english: "to be clean", verbType: "ቀተ" },
+            { geez: "ነፍኀ", amharic: "ነፋ", english: "to blow", verbType: "ቀተ" }
+        ];
+
+        // Verb types for filtering
+        const verbTypes = [
+            { id: "all", name: "All Verbs" },
+            { id: "ቀተ", name: "ቀተ" },
+            { id: "ቀደ", name: "ቀደ" },
+            { id: "ማህ", name: "ማህ" },
+            { id: "ተን", name: "ተን" },
+            { id: "ጦመ", name: "ጦመ" },
+            { id: "ባረ", name: "ባረ" },
+            { id: "ሴሰ", name: "ሴሰ" },
+            { id: "ተም", name: "ተም" },
+            { id: "ክህ", name: "ክህ" }
+        ];
+
+        // App state
+        let currentWordIndex = 0;
+        let quizScore = 0;
+        let currentQuestionIndex = 0;
+        let selectedVerbType = "all";
+        let userProgress = {
+            wordsLearned: 0,
+            quizzesTaken: 0,
+            correctAnswers: 0,
+            totalAnswers: 0,
+            streak: 0,
+            achievements: []
+        };
+
+        // DOM elements
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const wordListContainer = document.getElementById('wordListContainer');
+        const verbtypeFilter = document.getElementById('verbtypeFilter');
+        const learnVerbtypeFilter = document.getElementById('learnVerbtypeFilter');
+        const quizVerbtypeFilter = document.getElementById('quizVerbtypeFilter');
+        const learnVerbtype = document.getElementById('learnVerbtype');
+        const learnGeez = document.getElementById('learnGeez');
+        const learnAmharic = document.getElementById('learnAmharic');
+        const learnEnglish = document.getElementById('learnEnglish');
+        const verbConjugation = document.getElementById('verbConjugation');
+        const prevWordBtn = document.getElementById('prevWord');
+        const nextWordBtn = document.getElementById('nextWord');
+        const quizQuestion = document.getElementById('quizQuestion');
+        const quizOptions = document.getElementById('quizOptions');
+        const quizProgress = document.getElementById('quizProgress');
+        const quizScoreDisplay = document.getElementById('quizScore');
+        const totalQuestionsDisplay = document.getElementById('totalQuestions');
+        const nextQuestionBtn = document.getElementById('nextQuestion');
+        const quizFeedback = document.getElementById('quizFeedback');
+        const wordsLearnedDisplay = document.getElementById('wordsLearned');
+        const quizzesTakenDisplay = document.getElementById('quizzesTaken');
+        const correctAnswersDisplay = document.getElementById('correctAnswers');
+        const streakDisplay = document.getElementById('streak');
+        const achievementsList = document.getElementById('achievementsList');
+
+        // Initialize the app
+        function initApp() {
+            setupVerbtypeFilters();
+            displayWordList();
+            setupLearningMode();
+            setupQuiz();
+            updateProgressDisplay();
+            loadUserProgress();
+        }
+
+        // Setup verb type filters for all tabs
+        function setupVerbtypeFilters() {
+            // Verb list tab
+            verbTypes.forEach(verbType => {
+                const button = document.createElement('button');
+                button.className = `verbtype-btn ${verbType.id === 'all' ? 'active' : ''}`;
+                button.textContent = verbType.name;
+                button.setAttribute('data-verbtype', verbType.id);
+                button.addEventListener('click', () => {
+                    // Update active verb type button
+                    document.querySelectorAll('#verbtypeFilter .verbtype-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+
+                    // Filter verbs
+                    selectedVerbType = verbType.id;
+                    displayWordList();
+                });
+                verbtypeFilter.appendChild(button);
+            });
+
+            // Learning mode tab
+            verbTypes.forEach(verbType => {
+                const button = document.createElement('button');
+                button.className = `verbtype-btn ${verbType.id === 'all' ? 'active' : ''}`;
+                button.textContent = verbType.name;
+                button.setAttribute('data-verbtype', verbType.id);
+                button.addEventListener('click', () => {
+                    // Update active verb type button
+                    document.querySelectorAll('#learnVerbtypeFilter .verbtype-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+
+                    // Filter verbs for learning mode
+                    selectedVerbType = verbType.id;
+                    currentWordIndex = 0;
+                    updateLearningCard();
+                });
+                learnVerbtypeFilter.appendChild(button);
+            });
+
+            // Quiz tab
+            verbTypes.forEach(verbType => {
+                const button = document.createElement('button');
+                button.className = `verbtype-btn ${verbType.id === 'all' ? 'active' : ''}`;
+                button.textContent = verbType.name;
+                button.setAttribute('data-verbtype', verbType.id);
+                button.addEventListener('click', () => {
+                    // Update active verb type button
+                    document.querySelectorAll('#quizVerbtypeFilter .verbtype-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+
+                    // Filter verbs for quiz
+                    selectedVerbType = verbType.id;
+                    startQuiz();
+                });
+                quizVerbtypeFilter.appendChild(button);
+            });
+        }
+
+        // Get filtered verbs based on selected verb type
+        function getFilteredWords() {
+            if (selectedVerbType === "all") {
+                return vocabulary;
+            }
+            return vocabulary.filter(word => word.verbType === selectedVerbType);
+        }
+
+        // Display all verbs in the verb list
+        function displayWordList() {
+            const filteredWords = getFilteredWords();
+            wordListContainer.innerHTML = '';
+
+            filteredWords.forEach(word => {
+                const wordCard = document.createElement('div');
+                wordCard.className = 'word-card';
+
+                wordCard.innerHTML = `
+                    <div class="word-verbtype">${word.verbType}</div>
+                    <div class="word-geez">${word.geez}</div>
+                    <div class="word-amharic">${word.amharic}</div>
+                    <div class="word-english">${word.english}</div>
+                `;
+                wordListContainer.appendChild(wordCard);
+            });
+        }
+
+        // Setup learning mode
+        function setupLearningMode() {
+            updateLearningCard();
+
+            prevWordBtn.addEventListener('click', () => {
+                const filteredWords = getFilteredWords();
+                currentWordIndex = (currentWordIndex - 1 + filteredWords.length) % filteredWords.length;
+                updateLearningCard();
+            });
+
+            nextWordBtn.addEventListener('click', () => {
+                const filteredWords = getFilteredWords();
+                currentWordIndex = (currentWordIndex + 1) % filteredWords.length;
+                updateLearningCard();
+
+                // Mark word as learned if not already
+                if (!userProgress.wordsLearned.includes(currentWordIndex)) {
+                    userProgress.wordsLearned++;
+                    updateProgressDisplay();
+                    saveUserProgress();
+                }
+            });
+        }
+
+        // Update the learning card with current verb
+        function updateLearningCard() {
+            const filteredWords = getFilteredWords();
+            const word = filteredWords[currentWordIndex];
+
+            if (!word) {
+                learnVerbtype.textContent = "No verbs";
+                learnGeez.textContent = "N/A";
+                learnAmharic.textContent = "N/A";
+                learnEnglish.textContent = "No verbs in this verb type";
+                verbConjugation.classList.add('hidden');
+                return;
+            }
+
+            learnVerbtype.textContent = word.verbType;
+            learnGeez.textContent = word.geez;
+            learnAmharic.textContent = word.amharic;
+            learnEnglish.textContent = word.english;
+
+            // Hide conjugation section since we don't have that data
+            verbConjugation.classList.add('hidden');
+        }
+
+        // Setup quiz functionality
+        function setupQuiz() {
+            nextQuestionBtn.addEventListener('click', nextQuizQuestion);
+            startQuiz();
+        }
+
+        // Start a new quiz
+        function startQuiz() {
+            quizScore = 0;
+            currentQuestionIndex = 0;
+            quizScoreDisplay.textContent = quizScore;
+
+            const filteredWords = getFilteredWords();
+            totalQuestionsDisplay.textContent = filteredWords.length;
+
+            nextQuizQuestion();
+        }
+
+        // Display next quiz question
+        function nextQuizQuestion() {
+            const filteredWords = getFilteredWords();
+
+            if (currentQuestionIndex >= filteredWords.length) {
+                endQuiz();
+                return;
+            }
+
+            const word = filteredWords[currentQuestionIndex];
+            const questionType = Math.floor(Math.random() * 6); // 0-5 for different question types
+
+            let questionText = '';
+            let correctAnswer = '';
+            let options = [];
+
+            switch(questionType) {
+                case 0: // Geez to English
+                    questionText = `What is the English translation of this Geez verb: "${word.geez}"?`;
+                    correctAnswer = word.english;
+                    options = getRandomOptions(word.english, 'english', filteredWords);
+                    break;
+                case 1: // English to Geez
+                    questionText = `What is the Geez verb for "${word.english}"?`;
+                    correctAnswer = word.geez;
+                    options = getRandomOptions(word.geez, 'geez', filteredWords);
+                    break;
+                case 2: // Amharic to English
+                    questionText = `What is the English translation of this Amharic verb: "${word.amharic}"?`;
+                    correctAnswer = word.english;
+                    options = getRandomOptions(word.english, 'english', filteredWords);
+                    break;
+                case 3: // English to Amharic
+                    questionText = `What is the Amharic verb for "${word.english}"?`;
+                    correctAnswer = word.amharic;
+                    options = getRandomOptions(word.amharic, 'amharic', filteredWords);
+                    break;
+                case 4: // Geez to Amharic
+                    questionText = `What is the Amharic translation of this Geez verb: "${word.geez}"?`;
+                    correctAnswer = word.amharic;
+                    options = getRandomOptions(word.amharic, 'amharic', filteredWords);
+                    break;
+                case 5: // Amharic to Geez
+                    questionText = `What is the Geez verb for this Amharic verb: "${word.amharic}"?`;
+                    correctAnswer = word.geez;
+                    options = getRandomOptions(word.geez, 'geez', filteredWords);
+                    break;
+            }
+
+            quizQuestion.textContent = questionText;
+            displayQuizOptions(options, correctAnswer, questionType);
+
+            quizProgress.style.width = `${(currentQuestionIndex / filteredWords.length) * 100}%`;
+            quizFeedback.classList.add('hidden');
+            nextQuestionBtn.disabled = true;
+            currentQuestionIndex++;
+        }
+
+        // Get random options for quiz
+        function getRandomOptions(correctAnswer, type, wordList) {
+            const options = [correctAnswer];
+
+            // Get 3 random wrong answers
+            while (options.length < 4) {
+                const randomIndex = Math.floor(Math.random() * wordList.length);
+                const randomWord = wordList[randomIndex];
+                let randomOption;
+
+                if (type === 'english') {
+                    randomOption = randomWord.english;
+                } else if (type === 'amharic') {
+                    randomOption = randomWord.amharic;
+                } else { // geez
+                    randomOption = randomWord.geez;
+                }
+
+                if (!options.includes(randomOption) && randomOption !== correctAnswer) {
+                    options.push(randomOption);
+                }
+            }
+
+            // Shuffle options
+            return shuffleArray(options);
+        }
+
+        // Shuffle array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Display quiz options
+        function displayQuizOptions(options, correctAnswer, questionType) {
+            quizOptions.innerHTML = '';
+
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    if (optionElement.classList.contains('selected')) return;
+
+                    // Disable all options
+                    document.querySelectorAll('.quiz-option').forEach(opt => {
+                        opt.style.pointerEvents = 'none';
+                    });
+
+                    // Check if answer is correct
+                    const isCorrect = option === correctAnswer;
+
+                    if (isCorrect) {
+                        optionElement.classList.add('correct');
+                        quizScore++;
+                        quizScoreDisplay.textContent = quizScore;
+                        quizFeedback.textContent = 'Correct! Well done.';
+                        quizFeedback.className = 'feedback correct';
+                    } else {
+                        optionElement.classList.add('incorrect');
+                        // Highlight correct answer
+                        document.querySelectorAll('.quiz-option').forEach(opt => {
+                            if (opt.textContent === correctAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                        quizFeedback.textContent = `Incorrect. The correct answer is: ${correctAnswer}`;
+                        quizFeedback.className = 'feedback incorrect';
+                    }
+
+                    quizFeedback.classList.remove('hidden');
+                    nextQuestionBtn.disabled = false;
+
+                    // Update progress
+                    userProgress.totalAnswers++;
+                    if (isCorrect) userProgress.correctAnswers++;
+                    updateProgressDisplay();
+                    saveUserProgress();
+                });
+
+                quizOptions.appendChild(optionElement);
+            });
+        }
+
+        // End quiz and show results
+        function endQuiz() {
+            const filteredWords = getFilteredWords();
+            quizQuestion.textContent = `Quiz Complete! Your score: ${quizScore}/${filteredWords.length}`;
+            quizOptions.innerHTML = '';
+            quizFeedback.classList.add('hidden');
+            nextQuestionBtn.textContent = 'Restart Quiz';
+            nextQuestionBtn.onclick = () => {
+                nextQuestionBtn.textContent = 'Next Question';
+                nextQuestionBtn.onclick = nextQuizQuestion;
+                startQuiz();
+            };
+
+            // Update progress
+            userProgress.quizzesTaken++;
+            updateProgressDisplay();
+            saveUserProgress();
+
+            // Check for achievements
+            checkAchievements();
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            wordsLearnedDisplay.textContent = userProgress.wordsLearned;
+            quizzesTakenDisplay.textContent = userProgress.quizzesTaken;
+
+            const accuracy = userProgress.totalAnswers > 0
+                ? Math.round((userProgress.correctAnswers / userProgress.totalAnswers) * 100)
+                : 0;
+            correctAnswersDisplay.textContent = `${accuracy}%`;
+
+            streakDisplay.textContent = userProgress.streak;
+
+            // Update achievements display
+            displayAchievements();
+        }
+
+        // Display achievements
+        function displayAchievements() {
+            achievementsList.innerHTML = '';
+
+            const achievements = [
+                { id: 'first_quiz', name: 'First Quiz', description: 'Complete your first quiz', unlocked: userProgress.quizzesTaken > 0 },
+                { id: 'perfect_score', name: 'Perfect Score', description: 'Get a perfect score on a quiz', unlocked: quizScore === getFilteredWords().length && userProgress.quizzesTaken > 0 },
+                { id: 'verb_master', name: 'Verb Master', description: 'Learn all verbs', unlocked: userProgress.wordsLearned >= vocabulary.length },
+                { id: 'quiz_enthusiast', name: 'Quiz Enthusiast', description: 'Complete 5 quizzes', unlocked: userProgress.quizzesTaken >= 5 },
+                { id: 'verbtype_expert', name: 'Verb Type Expert', description: 'Learn 10 verbs of each type', unlocked: checkVerbTypeMastery() }
+            ];
+
+            achievements.forEach(achievement => {
+                const achievementElement = document.createElement('div');
+                achievementElement.className = `achievement ${achievement.unlocked ? 'unlocked' : ''}`;
+                achievementElement.innerHTML = `
+                    <div class="achievement-icon">${achievement.unlocked ? '🏆' : '🔒'}</div>
+                    <div>
+                        <div><strong>${achievement.name}</strong></div>
+                        <div>${achievement.description}</div>
+                    </div>
+                `;
+                achievementsList.appendChild(achievementElement);
+            });
+        }
+
+        // Check if user has learned 10 verbs of each type
+        function checkVerbTypeMastery() {
+            // This is a simplified check - in a real app you'd track which specific verbs were learned
+            return userProgress.wordsLearned >= 50; // Approximate check
+        }
+
+        // Check for new achievements
+        function checkAchievements() {
+            // This would typically check conditions and unlock achievements
+            // For simplicity, we're just updating the display
+            displayAchievements();
+        }
+
+        // Tab navigation
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Update active tab content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+
+                // If switching to progress tab, update display
+                if (tabId === 'progress') {
+                    updateProgressDisplay();
+                }
+            });
+        });
+
+        // Load user progress from localStorage
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem('vocabularyQuizProgress');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+            }
+        }
+
+        // Save user progress to localStorage
+        function saveUserProgress() {
+            localStorage.setItem('vocabularyQuizProgress', JSON.stringify(userProgress));
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
