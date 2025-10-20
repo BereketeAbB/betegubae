@@ -86,9 +86,31 @@
       font-size: 1.3rem;
     }
     td.symbol:hover { background: #e0f7fa; }
+        .nav-link {
+      display: flex;
+      justify-content: flex-end;
+      margin: 10px 0 20px;
+    }
+
+    .nav-link a {
+      background-color: #3498db;
+      color: white;
+      padding: 7px 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-link a:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 <body>
+  <div class="nav-link">
+      <a class="btn" href="index.html">ወደኋላ</a>
+  </div>
   <h1>Geez Number Trainer</h1>
 
   <button onclick="openManual()">📖 Manual</button>
