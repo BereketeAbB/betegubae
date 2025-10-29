@@ -530,6 +530,33 @@
             color: #2c3e50;
         }
 
+        .nav-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .nav-link .btn {
+            padding: 12px 24px;
+            background: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+            transition: transform .15s ease, background .2s ease;
+            display: inline-block;
+        }
+
+        .nav-link .btn:hover {
+            background: #eee7d8;
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #222;
+        }
+
         @media (max-width: 768px) {
             .container {
                 width: 95%;
@@ -574,6 +601,12 @@
                 <div class="container">
                     <button class="btn" id="messeretawiyanBtn">መሠረታውያን</button>
                     <button class="btn tooltip" id="memarBtn" disabled>መማር</button>
+                </div>
+                <div class="container">
+                    <div class="nav-link">
+                        <a class="btn" href="index.html">ወደኋላ</a>
+                    </div>
+                    <!-- rest of your content -->
                 </div>
             </div>
 
