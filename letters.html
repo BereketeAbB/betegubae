@@ -5,25 +5,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amharic Letter Learning Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Noto Sans Ethiopic", sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            background: #f8f5f0;
+            margin: 0;
+            padding: 40px 0;
+            text-align: center;
             color: #333;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+
+        .quote-box {
+            width: 80%;
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+            background: white;
+            border-left: 6px solid #b8860b;
+            padding: 20px 30px;
+            font-size: 20px;
+            line-height: 1.7;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0 8px 8px 0;
         }
 
         .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 22px 40px;
+            background: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            width: 220px;
+            text-align: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+            transition: transform .15s ease, background .2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #eee7d8;
+            transform: translateY(-3px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            background: white;
+            transform: none;
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: "You should first login";
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .main-content {
             width: 100%;
             max-width: 900px;
             background-color: white;
@@ -31,26 +114,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             margin: 20px 0;
-        }
-
-        header {
-            background: linear-gradient(to right, #2c3e50, #4a6491);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .main-content {
             padding: 30px;
         }
 
@@ -71,28 +134,6 @@
             line-height: 1.6;
             margin-bottom: 30px;
             color: #555;
-        }
-
-        .btn {
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-            margin: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(to right, #e74c3c, #c0392b);
         }
 
         .selection-screen {
@@ -126,7 +167,7 @@
 
         .option-card:hover {
             transform: translateY(-5px);
-            border-color: #3498db;
+            border-color: #b8860b;
         }
 
         .option-title {
@@ -136,7 +177,7 @@
         }
 
         .option-letters {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             margin-bottom: 15px;
             color: #2c3e50;
         }
@@ -349,7 +390,7 @@
 
         .meaning-lang {
             font-weight: bold;
-            color: #3498db;
+            color: #b8860b;
             margin-bottom: 5px;
         }
 
@@ -376,12 +417,117 @@
             transform: translateY(-2px);
         }
 
+        .example-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .example-item {
+            margin-bottom: 10px;
+        }
+
+        .example-letter {
+            font-weight: bold;
+            color: #b8860b;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
             color: #7f8c8d;
             font-size: 0.9rem;
             margin-top: 20px;
+        }
+
+        .letter-row-heading {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .letter-heading {
+            width: 100px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #b8860b;
+            font-weight: bold;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .letter-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .letter-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+        }
+
+        .letter {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .letter-sound {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .vowel-order-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .vowel-order-title {
+            font-weight: bold;
+            color: #b8860b;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .vowel-order-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .vowel-order-name {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 80px;
+            text-align: left;
+        }
+
+        .vowel-order-letter {
+            font-size: 1.2rem;
+            color: #2c3e50;
         }
 
         @media (max-width: 768px) {
@@ -416,19 +562,19 @@
 
 <body>
     <div class="container">
-        <div class="nav-link">
-            <a class="btn" href="index.html">ወደኋላ</a>
+        <div class="quote-box">
+            መምህረ ፊደላት ዘግእዝ - ናእምር ልሳነ ግእዝ
         </div>
-        <header>
-            <h1>መምህረ ፊደላት ዘግእዝ</h1>
-            <p class="subtitle">ናእምር ልሳነ ግእዝ</p>
-        </header>
 
         <div class="main-content">
             <!-- Welcome Screen -->
             <div class="welcome-screen" id="welcomeScreen">
                 <h2>ትምህርተ ፊደላት - የፊደሎች ትምህርት</h2>
-                <button class="btn" id="startLearningBtn">ወጥን - ጀምር</button>
+                <p>የግእዝ ፊደላትን በቀላሉ ይማሩ</p>
+                <div class="container">
+                    <button class="btn" id="messeretawiyanBtn">መሠረታውያን</button>
+                    <button class="btn tooltip" id="memarBtn" disabled>መማር</button>
+                </div>
             </div>
 
             <!-- Selection Screen -->
@@ -436,24 +582,34 @@
                 <h2>ኅረይ</h2>
                 <div class="selection-options">
                     <div class="option-card" data-sequence="0">
-                        <div class="option-title">ሀለሐመ</div>
-                        <div class="option-letters">ሀሁሂሃህሄሆ</div>
-                        <p class="option-desc">.</p>
+                        <div class="option-title">ሀሁሂሃ</div>
+                        <div class="option-letters">ሀ ፣ ሁ ፣ ሂ ፣ ሃ ፣ ህ ፣ ሄ ፣ ሆ</div>
+                        <p class="option-desc">መሠረታዊ ፊደላት</p>
                     </div>
                     <div class="option-card" data-sequence="1">
-                        <div class="option-title">አቡጉዳ</div>
-                        <div class="option-letters">አቡጊዳሄውዞ</div>
-                        <p class="option-desc">.</p>
+                        <div class="option-title">አቡጊዳ</div>
+                        <div class="option-letters">አ ፣ ቡ ፣ ጊ ፣ ዳ ፣ ሄ ፣ ው ፣ ዞ</div>
+                        <p class="option-desc">መሠረታዊ ፊደላት</p>
+                    </div>
+                    <div class="option-card" data-sequence="2">
+                        <div class="option-title">ሕጹጻን ፊደላት</div>
+                        <div class="option-letters">ኰ ፣ ኈ ፣ ኈ ፣ቈ</div>
+                        <p class="option-desc">ልዩ ፊደላት</p>
+                    </div>
+                    <div class="option-card" data-sequence="3">
+                        <div class="option-title">ሞክሼ ፊደላት</div>
+                        <div class="option-letters">ሀ ፣ ሐ ፣ ኀ ፣ ሠ ፣ ሰ ፣ አ ፣ ዐ ፣ ጸ ፣ ፀ </div>
+                        <p class="option-desc">ልዩ ፊደላት</p>
                     </div>
                 </div>
-                <button class="btn btn-secondary" id="backToWelcomeBtn">ተመየጥ - ጀምር</button>
+                <button class="btn" id="backToWelcomeBtn">ወደኋላ</button>
             </div>
 
             <!-- Learning Screen -->
             <div class="learning-screen" id="learningScreen">
                 <div class="learning-header">
                     <h2 class="learning-title" id="learningTitle">ትምህርተ ፊደላት - የፊደሎች ትምህርት</h2>
-                    <button class="btn btn-secondary" id="backToSelectionBtn">ወልጥ - ለውጥ</button>
+                    <button class="btn" id="backToSelectionBtn">ወደኋላ</button>
                 </div>
 
                 <div class="letters-container" id="lettersContainer">
@@ -499,6 +655,9 @@
                     <div class="meaning-text" id="meaningAm">የአብ መኖር ከዓለም በፊት ነው</div>
                 </div>
             </div>
+            <div class="example-section" id="exampleSection">
+                <!-- Examples will be dynamically inserted here -->
+            </div>
             <button class="play-sound" id="playSoundBtn">
                 <span>Listen to Pronunciation</span>
             </button>
@@ -519,7 +678,8 @@
                     gz: "ሀልዎቱ ለአብ እምቅድመ ዓለም",
                     en: "The existence of the Father is before the world",
                     am: "የአብ መኖር ከዓለም በፊት ነው",
-                }
+                },
+                examples: ["ሀምሳ (fifty)", "ሀምሌ (July)", "ሀይማኖት (religion)"]
             },
             "ሁ": {
                 voice: "sounds/letters/hu.mp3",
@@ -527,7 +687,8 @@
                     gz: "ኪያሁ ተወከሉ",
                     en: "They believed in Him",
                     am: "በእርሱ (በእግዚአብሔር) ታመኑ",
-                }
+                },
+                examples: ["ሁለት (two)", "ሁሉ (all)", "ሁኔታ (situation)"]
             },
             "ሂ": {
                 voice: "sounds/letters/hi.mp3",
@@ -535,7 +696,8 @@
                     gz: "አስተይዎ ብሂዐ",
                     en: "The Jews gave Him vinegar",
                     am: "አይሁድ ጌታን ሖምጣጤ አጠጡት",
-                }
+                },
+                examples: ["ሂሳብ (mathematics)", "ሂወት (life)", "ሂብ (give)"]
             },
             "ሃ": {
                 voice: "sounds/letters/hae.mp3",
@@ -543,7 +705,8 @@
                     gz: "ሃሌ ሉያ",
                     en: "He who existed before the world continues beyond it",
                     am: "ቅድመ ዓለም የነበረ ዓለምን አሳልፎ የሚኖር",
-                }
+                },
+                examples: ["ሃም (Noah)", "ሃይል (power)", "ሃይማኖት (religion)"]
             },
             "ሄ": {
                 voice: "sounds/letters/he.mp3",
@@ -551,7 +714,8 @@
                     gz: "በኲለሄ ሀሎ",
                     en: "God is present in all places and times",
                     am: "እግዚአብሔር በሁሉ ቦታ እና ጊዜ አለ",
-                }
+                },
+                examples: ["ሄደ (went)", "ሄይና (Hina)", "ሄር (hair)"]
             },
             "ህ": {
                 voice: "sounds/letters/hiu.mp3",
@@ -559,15 +723,17 @@
                     gz: "ህልው እግዚአብሔር",
                     en: "God exists",
                     am: "እግዚአብሔር አለ",
-                }
+                },
+                examples: ["ህመም (pain)", "ህዝብ (people)", "ህንፃ (building)"]
             },
             "ሆ": {
                 voice: "sounds/letters/ho.mp3",
                 meaning: {
-                    gz: "",
-                    en: "",
-                    am: "",
-                }
+                    gz: "ሆላንድ የአውሮፓ ሀገር",
+                    en: "Holland is a European country",
+                    am: "ሆላንድ የአውሮፓ ሀገር ናት",
+                },
+                examples: ["ሆድ (stomach)", "ሆስፒታል (hospital)", "ሆነ (became)"]
             },
             // Le series
             "ለ": {
@@ -576,7 +742,8 @@
                     gz: "ለብሰ ሥጋ ዙኣነ",
                     en: "God took our flesh",
                     am: "እግዚአብሔር የእኛን ሥጋ ተዋሐደ",
-                }
+                },
+                examples: ["ለምን (why)", "ለቅሶ (crying)", "ለንጋት (morning)"]
             },
             "ሉ": {
                 voice: "sounds/letters/lu.mp3",
@@ -584,7 +751,8 @@
                     gz: "ሣህሉ ለእግዚአብሔር",
                     en: "The mercy of God",
                     am: "የእግዚአብሔር ይቅርታ",
-                }
+                },
+                examples: ["ሉል (pearl)", "ሉአላዊ (sovereign)", "ሉቃስ (Luke)"]
             },
             "ሊ": {
                 voice: "sounds/letters/li.mp3",
@@ -592,7 +760,8 @@
                     gz: "ከሃሊ እግዚአብሔር",
                     en: "God is Almighty",
                     am: "እግዚአብሔር ሁሉን ቻይ ነው",
-                }
+                },
+                examples: ["ሊቀ መኳንንት (chief)", "ሊቅ (wise)", "ሊቀ ጳጳስ (patriarch)"]
             },
             "ላ": {
                 voice: "sounds/letters/la.mp3",
@@ -600,7 +769,8 @@
                     gz: "ላሜድ ልዑል እግዚአብሔር",
                     en: "God is the Most High",
                     am: "እግዚአብሔር ልዑል ነው",
-                }
+                },
+                examples: ["ላም (cow)", "ላንቃ (tongue)", "ላይ (on)"]
             },
             "ሌ": {
                 voice: "sounds/letters/le.mp3",
@@ -608,7 +778,8 @@
                     gz: "መቅለሌ ዕጹብ",
                     en: "God who removes affliction",
                     am: "ጭንቀትን የሚያቀል እግዚአብሔር",
-                }
+                },
+                examples: ["ሌሊት (night)", "ሌባ (thief)", "ሌላ (other)"]
             },
             "ል": {
                 voice: "sounds/letters/lih.mp3",
@@ -616,7 +787,8 @@
                     gz: "መስቀል ዘወልደ አብ",
                     en: "The cross of the Son of the Father",
                     am: "የአብ ልጅ መስቀል",
-                }
+                },
+                examples: ["ልጅ (child)", "ልብስ (clothes)", "ልዩ (special)"]
             },
             "ሎ": {
                 voice: "sounds/letters/lo.mp3",
@@ -624,7 +796,8 @@
                     gz: "ዘሀሎ እምቅድም",
                     en: "God who existed before the world",
                     am: "ቅድመ ዓለም የነበረ እግዚአብሔር",
-                }
+                },
+                examples: ["ሎሚ (lemon)", "ሎቂ (key)", "ሎሌ (servant)"]
             },
             // Second sequence
             "አ": {
@@ -633,7 +806,8 @@
                     gz: "አአኲቶ ወእሴብሖ ለእግዙአብሔር። ",
                     en: "I will always praise God.",
                     am: "እግዙአብሔርን ፈጽሞ አመሰግነዋለሁ።"
-                }
+                },
+                examples: ["አባት (father)", "አማርኛ (Amharic)", "አይን (eye)"]
             },
             "ቡ": {
                 voice: "sounds/letters/bu.mp3",
@@ -641,39 +815,44 @@
                     gz: "ጥበቡ ለአብ። ",
                     en: "The wisdom of the Father",
                     am: "የአብ ጥበቡ"
-                }
+                },
+                examples: ["ቡና (coffee)", "ቡቃያ (flower)", "ቡድን (group)"]
             },
             "ጊ": {
                 voice: "sounds/letters/gi.mp3",
                 meaning: {
                     gz: "ጊዛ ገቢር ለእግዙአብሔር።",
-                    en: "",
-                    am: ""
-                }
+                    en: "God is the great protector",
+                    am: "እግዚአብሔር ታላቅ ጠባቂ ነው"
+                },
+                examples: ["ጊዜ (time)", "ጊዜያዊ (temporary)", "ጊዜ ማለፊያ (pastime)"]
             },
             "ዳ": {
                 voice: "sounds/letters/da.mp3",
                 meaning: {
                     gz: "ዳሌጥ ድልው እግዙአብሔር",
-                    en: "",
-                    am: ""
-                }
+                    en: "God is the victorious judge",
+                    am: "እግዚአብሔር አሸናፊ ፈራጅ ነው"
+                },
+                examples: ["ዳግም (again)", "ዳቦ (bread)", "ዳንኤል (Daniel)"]
             },
             "ው": {
                 voice: "sounds/letters/wu.mp3",
                 meaning: {
                     gz: "ሥግው ቃል",
-                    en: "",
+                    en: "The word became flesh",
                     am: "ሰው የሆነ አምላክ"
-                }
+                },
+                examples: ["ውሃ (water)", "ውስጥ (inside)", "ውይ (oh)"]
             },
             "ዞ": {
                 voice: "sounds/letters/zo.mp3",
                 meaning: {
-                    gz: "",
-                    en: "",
-                    am: ""
-                }
+                    gz: "ዞን የምድር ክፍል",
+                    en: "Zone is a part of the earth",
+                    am: "ዞን የምድር ክፍል ነው"
+                },
+                examples: ["ዞር (turn)", "ዞን (zone)", "ዞባ (district)"]
             },
             "በ": {
                 voice: "sounds/letters/be.mp3",
@@ -681,39 +860,44 @@
                     gz: "በትሕትናሁ ወረደ ለቤዛ ኲሉ ዓለም",
                     en: "To save the whole world, He came down in humility",
                     am: "ዓለምን ሁሉ ለማዳን በትሕትናው ሰው ሆነ"
-                }
+                },
+                examples: ["ቤት (house)", "በር (door)", "በጎ (good)"]
             },
             "ጉ": {
                 voice: "sounds/letters/gu.mp3",
                 meaning: {
                     gz: "ለአስካለ ሕይወት ሐረጉ",
-                    en: "",
-                    am: ""
-                }
+                    en: "He promised eternal life",
+                    am: "ዘለአለማዊ ሕይወትን ተስፋ አደረገ"
+                },
+                examples: ["ጉልበት (strength)", "ጉድ (bad)", "ጉጉት (anxiety)"]
             },
             "ዲ": {
                 voice: "sounds/letters/di.mp3",
                 meaning: {
                     gz: "ቃለ ዓዋዲ።",
-                    en: "",
-                    am: ""
-                }
+                    en: "The word of promise",
+                    am: "የተስፋ ቃል"
+                },
+                examples: ["ዲያብሎስ (devil)", "ዲስኮ (disco)", "ዲግሪ (degree)"]
             },
             "ዌ": {
                 voice: "sounds/letters/we.mp3",
                 meaning: {
                     gz: "ዜናዌ ትፍሥሕት",
-                    en: "",
+                    en: "The news brings joy",
                     am: "ደስታን የሚናገር"
-                }
+                },
+                examples: ["ዌብሳይት (website)", "ዌብ (web)", "ዌስት (west)"]
             },
             "ዝ": {
                 voice: "sounds/letters/ze.mp3",
                 meaning: {
                     gz: "አግአዝ ለአዳም",
-                    en: "",
+                    en: "He saved Adam",
                     am: "አዳምን ነጻ አወጣው"
-                }
+                },
+                examples: ["ዝና (fame)", "ዝርዝር (detail)", "ዝንጉ (sleep)"]
             },
             "ዣ": {
                 voice: "sounds/letters/zha.mp3",
@@ -721,7 +905,8 @@
                     gz: "ዣ base (mock)",
                     en: "Zha (mock)",
                     am: "ዣ ማክ"
-                }
+                },
+                examples: ["ዣር (jar)", "ዣምቢያ (Zambia)", "ዣንጋ (jangha)"]
             },
             "ገ": {
                 voice: "sounds/letters/ge.mp3",
@@ -729,7 +914,8 @@
                     gz: "ገ base (mock)",
                     en: "Ge (mock)",
                     am: "ገ ማክ"
-                }
+                },
+                examples: ["ገበሬ (farmer)", "ገንዘብ (money)", "ገነት (paradise)"]
             },
             "ዱ": {
                 voice: "sounds/letters/du.mp3",
@@ -737,7 +923,8 @@
                     gz: "ዱ base (mock)",
                     en: "Du (mock)",
                     am: "ዱ ማክ"
-                }
+                },
+                examples: ["ዱቄት (flour)", "ዱር (forest)", "ዱባ (coat)"]
             },
             "ሂ": {
                 voice: "sounds/letters/hi.mp3",
@@ -745,7 +932,8 @@
                     gz: "ሂ base (mock)",
                     en: "Hi (mock)",
                     am: "ሂ ማክ"
-                }
+                },
+                examples: ["ሂወት (life)", "ሂሳብ (mathematics)", "ሂብ (give)"]
             },
             "ዋ": {
                 voice: "sounds/letters/wa.mp3",
@@ -753,7 +941,8 @@
                     gz: "ዋ base (mock)",
                     en: "Wa (mock)",
                     am: "ዋ ማክ"
-                }
+                },
+                examples: ["ዋልታ (ball)", "ዋና (main)", "ዋሻ (cave)"]
             },
             "ዜ": {
                 voice: "sounds/letters/ze2.mp3",
@@ -761,7 +950,8 @@
                     gz: "ዜ base (mock)",
                     en: "Ze₂ (mock)",
                     am: "ዜ ማክ"
-                }
+                },
+                examples: ["ዜጋ (citizen)", "ዜና (news)", "ዜማ (song)"]
             },
             "ዥ": {
                 voice: "sounds/letters/zh.mp3",
@@ -769,7 +959,8 @@
                     gz: "ዥ base (mock)",
                     en: "Zh (mock)",
                     am: "ዥ ማክ"
-                }
+                },
+                examples: ["ዥምብር (zimbir)", "ዥንግሊዝ (England)", "ዥሩ (ziru)"]
             },
             "ጦ": {
                 voice: "sounds/letters/to.mp3",
@@ -777,11 +968,99 @@
                     gz: "ጦ base (mock)",
                     en: "To (mock)",
                     am: "ጦ ማክ"
-                }
-            }
+                },
+                examples: ["ጦር (army)", "ጦማር (book)", "ጦቢ (tobi)"]
+            },
+            "ኰ": { voice: "sounds/letters/kwa.mp3", meaning: { gz: "", en: "Kwa", am: "ኰ" }, examples: ["ኰረጅ (old)", "ኰረንጅ (kernel)"] },
+            "ኲ": { voice: "sounds/letters/kwi.mp3", meaning: { gz: "", en: "Kwi", am: "ኲ" }, examples: ["ኲንታ (question)"] },
+            "ኳ": { voice: "sounds/letters/kwe.mp3", meaning: { gz: "", en: "Kwe", am: "ኳ" }, examples: ["ኳስ (ball)"] },
+            "ኴ": { voice: "sounds/letters/kwae.mp3", meaning: { gz: "", en: "Kwae", am: "ኴ" }, examples: [] },
+            "ኵ": { voice: "sounds/letters/kwo.mp3", meaning: { gz: "", en: "Kwo", am: "ኵ" }, examples: [] },
+
+            "ጐ": { voice: "sounds/letters/gwa.mp3", meaning: { gz: "", en: "Gwa", am: "ጐ" }, examples: ["ጐልጉል (round)"] },
+            "ጒ": { voice: "sounds/letters/gwi.mp3", meaning: { gz: "", en: "Gwi", am: "ጒ" }, examples: [] },
+            "ጓ": { voice: "sounds/letters/gwe.mp3", meaning: { gz: "", en: "Gwe", am: "ጓ" }, examples: ["ጓደኛ (friend)"] },
+            "ጔ": { voice: "sounds/letters/gwae.mp3", meaning: { gz: "", en: "Gwae", am: "ጔ" }, examples: [] },
+            "ጕ": { voice: "sounds/letters/gwo.mp3", meaning: { gz: "", en: "Gwo", am: "ጕ" }, examples: [] },
+
+            "ኈ": { voice: "sounds/letters/kha.mp3", meaning: { gz: "", en: "Kha", am: "ኈ" }, examples: [] },
+            "ኊ": { voice: "sounds/letters/khi.mp3", meaning: { gz: "", en: "Khi", am: "ኊ" }, examples: [] },
+            "ኋ": { voice: "sounds/letters/khe.mp3", meaning: { gz: "", en: "Khe", am: "ኋ" }, examples: [] },
+            "ኌ": { voice: "sounds/letters/khae.mp3", meaning: { gz: "", en: "Khae", am: "ኌ" }, examples: [] },
+            "ኍ": { voice: "sounds/letters/kho.mp3", meaning: { gz: "", en: "Kho", am: "ኍ" }, examples: [] },
+
+            "ቈ": { voice: "sounds/letters/qwa.mp3", meaning: { gz: "", en: "Qwa", am: "ቈ" }, examples: [] },
+            "ቊ": { voice: "sounds/letters/qwi.mp3", meaning: { gz: "", en: "Qwi", am: "ቊ" }, examples: [] },
+            "ቋ": { voice: "sounds/letters/qwe.mp3", meaning: { gz: "", en: "Qwe", am: "ቋ" }, examples: ["ቋንቋ (language)"] },
+            "ቌ": { voice: "sounds/letters/qwae.mp3", meaning: { gz: "", en: "Qwae", am: "ቌ" }, examples: [] },
+            "ቍ": { voice: "sounds/letters/qwo.mp3", meaning: { gz: "", en: "Qwo", am: "ቍ" }, examples: [] },
+
+            // Mokshe Fidelat - additional letters
+            "ሐ": { voice: "sounds/letters/ha2.mp3", meaning: { gz: "ሐመሩ ሐ", en: "Ha (camel)", am: "ሐመር" }, examples: ["ሐመር (camel)", "ሐሙስ (Thursday)"] },
+            "ሑ": { voice: "sounds/letters/hu2.mp3", meaning: { gz: "", en: "Hu", am: "ሑ" }, examples: [] },
+            "ሒ": { voice: "sounds/letters/hi2.mp3", meaning: { gz: "", en: "Hi", am: "ሒ" }, examples: [] },
+            "ሓ": { voice: "sounds/letters/hae2.mp3", meaning: { gz: "", en: "Hae", am: "ሓ" }, examples: [] },
+            "ሔ": { voice: "sounds/letters/he2.mp3", meaning: { gz: "", en: "He", am: "ሔ" }, examples: [] },
+            "ሕ": { voice: "sounds/letters/hiu2.mp3", meaning: { gz: "", en: "Hiu", am: "ሕ" }, examples: [] },
+            "ሖ": { voice: "sounds/letters/ho2.mp3", meaning: { gz: "", en: "Ho", am: "ሖ" }, examples: [] },
+
+            "ኀ": { voice: "sounds/letters/ha3.mp3", meaning: { gz: "ብዙኀኑ ኀ", en: "Ha (many)", am: "ብዙ" }, examples: ["ብዙ (many)", "ኀይል (power)"] },
+            "ኁ": { voice: "sounds/letters/hu3.mp3", meaning: { gz: "", en: "Hu", am: "ኁ" }, examples: [] },
+            "ኂ": { voice: "sounds/letters/hi3.mp3", meaning: { gz: "", en: "Hi", am: "ኂ" }, examples: [] },
+            "ኃ": { voice: "sounds/letters/hae3.mp3", meaning: { gz: "", en: "Hae", am: "ኃ" }, examples: [] },
+            "ኄ": { voice: "sounds/letters/he3.mp3", meaning: { gz: "", en: "He", am: "ኄ" }, examples: [] },
+            "ኅ": { voice: "sounds/letters/hiu3.mp3", meaning: { gz: "", en: "Hiu", am: "ኅ" }, examples: [] },
+            "ኆ": { voice: "sounds/letters/ho3.mp3", meaning: { gz: "", en: "Ho", am: "ኆ" }, examples: [] },
+
+            "ሠ": { voice: "sounds/letters/se.mp3", meaning: { gz: "ንጉሡ ሠ", en: "Se (king)", am: "ንጉሥ" }, examples: ["ንጉሥ (king)", "ሠራዊት (army)"] },
+            "ሡ": { voice: "sounds/letters/su.mp3", meaning: { gz: "", en: "Su", am: "ሡ" }, examples: [] },
+            "ሢ": { voice: "sounds/letters/si.mp3", meaning: { gz: "", en: "Si", am: "ሢ" }, examples: [] },
+            "ሣ": { voice: "sounds/letters/sae.mp3", meaning: { gz: "", en: "Sae", am: "ሣ" }, examples: [] },
+            "ሤ": { voice: "sounds/letters/se2.mp3", meaning: { gz: "", en: "Se", am: "ሤ" }, examples: [] },
+            "ሥ": { voice: "sounds/letters/siu.mp3", meaning: { gz: "", en: "Siu", am: "ሥ" }, examples: [] },
+            "ሦ": { voice: "sounds/letters/so.mp3", meaning: { gz: "", en: "So", am: "ሦ" }, examples: [] },
+
+            "ሰ": { voice: "sounds/letters/se3.mp3", meaning: { gz: "እሳቱ ሰ", en: "Se (fire)", am: "እሳት" }, examples: ["እሳት (fire)", "ሰላም (peace)"] },
+            "ሱ": { voice: "sounds/letters/su2.mp3", meaning: { gz: "", en: "Su", am: "ሱ" }, examples: ["ሱፍ (wool)"] },
+            "ሲ": { voice: "sounds/letters/si2.mp3", meaning: { gz: "", en: "Si", am: "ሲ" }, examples: ["ሲሊንደር (cylinder)"] },
+            "ሳ": { voice: "sounds/letters/sae2.mp3", meaning: { gz: "", en: "Sae", am: "ሳ" }, examples: ["ሳንቃ (box)"] },
+            "ሴ": { voice: "sounds/letters/se4.mp3", meaning: { gz: "", en: "Se", am: "ሴ" }, examples: ["ሴት (woman)"] },
+            "ስ": { voice: "sounds/letters/siu2.mp3", meaning: { gz: "", en: "Siu", am: "ስ" }, examples: ["ስም (name)"] },
+            "ሶ": { voice: "sounds/letters/so2.mp3", meaning: { gz: "", en: "So", am: "ሶ" }, examples: ["ሶስት (three)"] },
+
+            "አ": { voice: "sounds/letters/a.mp3", meaning: { gz: "አልፋው አ", en: "A (alpha)", am: "አልፋ" }, examples: ["አባት (father)", "አማርኛ (Amharic)"] },
+            "ኡ": { voice: "sounds/letters/u.mp3", meaning: { gz: "", en: "U", am: "ኡ" }, examples: [] },
+            "ኢ": { voice: "sounds/letters/i.mp3", meaning: { gz: "", en: "I", am: "ኢ" }, examples: ["ኢትዮጵያ (Ethiopia)"] },
+            "ኣ": { voice: "sounds/letters/ae.mp3", meaning: { gz: "", en: "Ae", am: "ኣ" }, examples: [] },
+            "ኤ": { voice: "sounds/letters/e.mp3", meaning: { gz: "", en: "E", am: "ኤ" }, examples: ["ኤል (L)"] },
+            "እ": { voice: "sounds/letters/iu.mp3", meaning: { gz: "", en: "Iu", am: "እ" }, examples: ["እኔ (I)", "እሱ (he)"] },
+            "ኦ": { voice: "sounds/letters/o.mp3", meaning: { gz: "", en: "O", am: "ኦ" }, examples: ["ኦሮምያ (Oromia)"] },
+
+            "ዐ": { voice: "sounds/letters/a2.mp3", meaning: { gz: "ዓይኑ ዐ", en: "A (eye)", am: "ዓይን" }, examples: ["ዓይን (eye)", "ዓለም (world)"] },
+            "ዑ": { voice: "sounds/letters/u2.mp3", meaning: { gz: "", en: "U", am: "ዑ" }, examples: [] },
+            "ዒ": { voice: "sounds/letters/i2.mp3", meaning: { gz: "", en: "I", am: "ዒ" }, examples: [] },
+            "ዓ": { voice: "sounds/letters/ae2.mp3", meaning: { gz: "", en: "Ae", am: "ዓ" }, examples: [] },
+            "ዔ": { voice: "sounds/letters/e2.mp3", meaning: { gz: "", en: "E", am: "ዔ" }, examples: [] },
+            "ዕ": { voice: "sounds/letters/iu2.mp3", meaning: { gz: "", en: "Iu", am: "ዕ" }, examples: [] },
+            "ዖ": { voice: "sounds/letters/o2.mp3", meaning: { gz: "", en: "O", am: "ዖ" }, examples: [] },
+
+            "ጸ": { voice: "sounds/letters/tse.mp3", meaning: { gz: "ጸሎቱ ጸ", en: "Tse (prayer)", am: "ጸሎት" }, examples: ["ጸሎት (prayer)", "ጸሐፊ (writer)"] },
+            "ጹ": { voice: "sounds/letters/tsu.mp3", meaning: { gz: "", en: "Tsu", am: "ጹ" }, examples: [] },
+            "ጺ": { voice: "sounds/letters/tsi.mp3", meaning: { gz: "", en: "Tsi", am: "ጺ" }, examples: [] },
+            "ጻ": { voice: "sounds/letters/tsae.mp3", meaning: { gz: "", en: "Tsae", am: "ጻ" }, examples: [] },
+            "ጼ": { voice: "sounds/letters/tse2.mp3", meaning: { gz: "", en: "Tse", am: "ጼ" }, examples: [] },
+            "ጽ": { voice: "sounds/letters/tsiu.mp3", meaning: { gz: "", en: "Tsiu", am: "ጽ" }, examples: [] },
+            "ጾ": { voice: "sounds/letters/tso.mp3", meaning: { gz: "", en: "Tso", am: "ጾ" }, examples: [] },
+
+            "ፀ": { voice: "sounds/letters/tse3.mp3", meaning: { gz: "ፀሐይ ፀ", en: "Tse (sun)", am: "ፀሐይ" }, examples: ["ፀሐይ (sun)", "ፀጋ (grace)"] },
+            "ፁ": { voice: "sounds/letters/tsu2.mp3", meaning: { gz: "", en: "Tsu", am: "ፁ" }, examples: [] },
+            "ፂ": { voice: "sounds/letters/tsi2.mp3", meaning: { gz: "", en: "Tsi", am: "ፂ" }, examples: [] },
+            "ፃ": { voice: "sounds/letters/tsae2.mp3", meaning: { gz: "", en: "Tsae", am: "ፃ" }, examples: [] },
+            "ፄ": { voice: "sounds/letters/tse4.mp3", meaning: { gz: "", en: "Tse", am: "ፄ" }, examples: [] },
+            "ፅ": { voice: "sounds/letters/tsiu2.mp3", meaning: { gz: "", en: "Tsiu", am: "ፅ" }, examples: [] },
+            "ፆ": { voice: "sounds/letters/tso2.mp3", meaning: { gz: "", en: "Tso", am: "ፆ" }, examples: [] }
         };
 
-        // Letter sequences organized in different places
         const sequenceData = {
             // First sequence: array of arrays (rows)
             firstSequenceHaHu: [
@@ -799,6 +1078,27 @@
                 ["በ", "ጉ", "ዲ", "ሃ", "ዌ", "ዝ", "ዣ"],
                 // row 3
                 ["ገ", "ዱ", "ሂ", "ዋ", "ዜ", "ዥ", "ጦ"]
+            ],
+
+            // Hitsutsan Fidelat (Labiovelar letters)
+            hitsutsanFidelat: [
+                ["ኰ", "ኲ", "ኳ", "ኴ", "ኵ"],
+                ["ጐ", "ጒ", "ጓ", "ጔ", "ጕ"],
+                ["ኈ", "ኊ", "ኋ", "ኌ", "ኍ"],
+                ["ቈ", "ቊ", "ቋ", "ቌ", "ቍ"]
+            ],
+
+            // Mokshe Fidelat (Homophones - 9 letters with similar sounds)
+            moksheFidelat: [
+                ["ሀ", "ሁ", "ሂ", "ሃ", "ሄ", "ህ", "ሆ"],
+                ["ሐ", "ሑ", "ሒ", "ሓ", "ሔ", "ሕ", "ሖ"],
+                ["ኀ", "ኁ", "ኂ", "ኃ", "ኄ", "ኅ", "ኆ"],
+                ["ሠ", "ሡ", "ሢ", "ሣ", "ሤ", "ሥ", "ሦ"],
+                ["ሰ", "ሱ", "ሲ", "ሳ", "ሴ", "ስ", "ሶ"],
+                ["አ", "ኡ", "ኢ", "ኣ", "ኤ", "እ", "ኦ"],
+                ["ዐ", "ዑ", "ዒ", "ዓ", "ዔ", "ዕ", "ዖ"],
+                ["ጸ", "ጹ", "ጺ", "ጻ", "ጼ", "ጽ", "ጾ"],
+                ["ፀ", "ፁ", "ፂ", "ፃ", "ፄ", "ፅ", "ፆ"]
             ]
         };
 
@@ -806,7 +1106,8 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const selectionScreen = document.getElementById('selectionScreen');
         const learningScreen = document.getElementById('learningScreen');
-        const startLearningBtn = document.getElementById('startLearningBtn');
+        const messeretawiyanBtn = document.getElementById('messeretawiyanBtn');
+        const memarBtn = document.getElementById('memarBtn');
         const backToWelcomeBtn = document.getElementById('backToWelcomeBtn');
         const backToSelectionBtn = document.getElementById('backToSelectionBtn');
         const lettersContainer = document.getElementById('lettersContainer');
@@ -817,6 +1118,7 @@
         const meaningGz = document.getElementById('meaningGz');
         const meaningEn = document.getElementById('meaningEn');
         const meaningAm = document.getElementById('meaningAm');
+        const exampleSection = document.getElementById('exampleSection');
         const playSoundBtn = document.getElementById('playSoundBtn');
         const startRecordingBtn = document.getElementById('startRecordingBtn');
         const stopRecordingBtn = document.getElementById('stopRecordingBtn');
@@ -832,9 +1134,14 @@
         let visualizerInterval;
 
         // Event listeners
-        startLearningBtn.addEventListener('click', () => {
+        messeretawiyanBtn.addEventListener('click', () => {
             welcomeScreen.style.display = 'none';
             selectionScreen.style.display = 'block';
+        });
+
+        memarBtn.addEventListener('click', () => {
+            // This button is disabled, so nothing happens
+            // The tooltip will show the message
         });
 
         backToWelcomeBtn.addEventListener('click', () => {
@@ -855,9 +1162,22 @@
                 learningScreen.style.display = 'block';
 
                 // Update learning title based on sequence
-                learningTitle.textContent = currentSequence === 0 ?
-                    'ሀለሐመሠ (ሀሁሂሃህሄሆ)' :
-                    'አቡጊዳ (አቡጊዳህሄውዞ)';
+                let title = "";
+                switch (currentSequence) {
+                    case 0:
+                        title = 'ሀሁሂሃ (ሀሁሂሃህሄሆ)';
+                        break;
+                    case 1:
+                        title = 'አቡጊዳ (አቡጊዳህሄውዞ)';
+                        break;
+                    case 2:
+                        title = 'ሕጹጻን ፊደላት';
+                        break;
+                    case 3:
+                        title = 'ሞክሼ ፊደላት';
+                        break;
+                }
+                learningTitle.textContent = title;
 
                 // Render letters
                 renderLetters();
@@ -885,10 +1205,36 @@
             lettersContainer.innerHTML = '';
 
             let sequence;
-            if (currentSequence === 0) {
-                sequence = sequenceData.firstSequenceHaHu;
-            } else {
-                sequence = sequenceData.secondSequenceABu;
+            switch (currentSequence) {
+                case 0:
+                    sequence = sequenceData.firstSequenceHaHu;
+                    break;
+                case 1:
+                    sequence = sequenceData.secondSequenceABu;
+                    break;
+                case 2:
+                    sequence = sequenceData.hitsutsanFidelat;
+                    break;
+                case 3:
+                    sequence = sequenceData.moksheFidelat;
+                    break;
+            }
+
+            // Add vowel order headings for sequences with 7 letters
+            if (sequence[0] && sequence[0].length === 7) {
+                const headingRow = document.createElement('div');
+                headingRow.className = 'letter-row-heading';
+
+                const vowelOrder = ['ግእዝ', 'ካዕብ', 'ሣልስ', 'ራብዕ', 'ሐምስ', 'ሳድስ', 'ሳብዕ'];
+
+                vowelOrder.forEach(heading => {
+                    const headingElement = document.createElement('div');
+                    headingElement.className = 'letter-heading';
+                    headingElement.textContent = heading;
+                    headingRow.appendChild(headingElement);
+                });
+
+                lettersContainer.appendChild(headingRow);
             }
 
             sequence.forEach(row => {
@@ -899,9 +1245,9 @@
                     const letterCard = document.createElement('div');
                     letterCard.className = 'letter-card';
                     letterCard.innerHTML = `
-                        <div class="letter">${letter}</div>
-                        <div class="letter-sound">${getSoundName(letterData[letter].voice)}</div>
-                    `;
+                <div class="letter">${letter}</div>
+                <div class="letter-sound">${getSoundName(letterData[letter]?.voice || "sounds/letters/default.mp3")}</div>
+            `;
 
                     letterCard.addEventListener('click', () => {
                         currentLetter = letter;
@@ -923,12 +1269,82 @@
         }
 
         function showLetterModal(letter) {
+
+            // Reset modal content first
+            modalLetter.textContent = "";
+            meaningGz.textContent = "";
+            meaningEn.textContent = "";
+            meaningAm.textContent = "";
+            exampleSection.innerHTML = "";
+
+            const existingVowelSection = document.querySelector('.vowel-order-section');
+            if (existingVowelSection) {
+                existingVowelSection.remove();
+            }
+
+
             const letterDataItem = letterData[letter];
             modalLetter.textContent = letter;
             meaningGz.textContent = letterDataItem.meaning.gz;
             meaningEn.textContent = letterDataItem.meaning.en;
             meaningAm.textContent = letterDataItem.meaning.am;
+
+            // Render examples
+            exampleSection.innerHTML = '<div class="meaning-lang">Examples:</div>';
+            letterDataItem.examples.forEach(example => {
+                const exampleItem = document.createElement('div');
+                exampleItem.className = 'example-item';
+                exampleItem.innerHTML = `<span class="example-letter">${letter}</span> - ${example}`;
+                exampleSection.appendChild(exampleItem);
+            });
+
+
+            // Add vowel order information based on the letter's position
+            const vowelOrderSection = document.createElement('div');
+            vowelOrderSection.className = 'vowel-order-section';
+
+            const currentLetterVariations = getCurrentLetterVariations(letter);
+
+            if (currentLetterVariations && currentLetterVariations.length === 7) {
+                const vowelOrder = ['ግእዝ', 'ካዕብ', 'ሣልስ', 'ራብዕ', 'ሐምስ', 'ሳድስ', 'ሳብዕ'];
+                const letterIndex = currentLetterVariations.indexOf(letter);
+
+                if (letterIndex !== -1) {
+                    vowelOrderSection.innerHTML = `
+                <div class="vowel-order-title">የፊደል ቅደም ተከተል:</div>
+                <div class="vowel-order-item">
+                    <span class="vowel-order-name">${vowelOrder[letterIndex]}</span>
+                    <span class="vowel-order-letter">${letter}</span>
+                </div>
+            `;
+                }
+            }
+
+            // Insert vowel order section before the play sound button
+            const playSoundBtn = document.getElementById('playSoundBtn');
+            playSoundBtn.parentNode.insertBefore(vowelOrderSection, playSoundBtn);
+
             letterModal.style.display = 'flex';
+        }
+
+        function getCurrentLetterVariations(letter) {
+            // Find which sequence contains this letter and return its variations
+            const sequences = [
+                sequenceData.firstSequenceHaHu,
+                sequenceData.secondSequenceABu,
+                sequenceData.moksheFidelat,
+                sequenceData.hitsutsanFidelat
+            ];
+
+            for (const sequence of sequences) {
+                for (const row of sequence) {
+                    if (row.includes(letter) && row.length === 7) {
+                        return row; // Return the complete row with all 7 variations
+                    }
+                }
+            }
+
+            return null;
         }
 
         function startRecording() {
