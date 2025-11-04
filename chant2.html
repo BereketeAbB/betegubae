@@ -122,6 +122,17 @@
       background-color: #ffdede;
     }
 
+    .line-break {
+      display: block;
+      height: 15px;
+    }
+
+    .empty-line {
+      display: block;
+      height: 25px;
+      border-bottom: 1px dashed #ddd;
+    }
+
     /* Load ZemaYared font */
     @font-face {
       font-family: 'ZemaYared';
@@ -134,7 +145,7 @@
 
 <body>
 
-  <h2>ውዳሴ ማርያም ዘሰኑይ</h2>
+  <h2>ምስባክ ዘጥቅምት 25</h2>
 
   <audio id="audio" controls>
     <source src="./symbols/compressed/01-WedaseMar_Monday.mp3" type="audio/mp3">
@@ -155,11 +166,17 @@
           {
             key: "ዘሠኑይ",
             data: [
-              { time: 1.14, end: 1.18, text: "ክቡ[ቡበ][,]‹ሠረ›ር ሞቱ[በእ][ጠጠ]‹ቀለ›" },
-              { time: 1.18, end: 1.28, text: "ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ›" },
+              { time: 1.14, end: 1.18, text: "ክቡ[ቡበ][,]‹ሠረ›ር" },
+              { time: 1.19, end: 1.23, text: "ሞቱ[በእ][ጠጠ]‹ቀለ›" },
+              { time: 1.24, end: 1.28, text: "ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ›" },
               { time: 1.29, end: 1.34, text: "በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር።" },
-              { time: 1.29, end: 1.34, text: "እ[~]ግ[][V]ዚኦ[ፔር][ዴ] አ[,][.]ነ[ነኒ][፴][ፈጠ][ድን] ገብር[፡]ከ[ጠጠ,]።" },
-              { time: 1.29, end: 1.34, text: "ገ[~][~][~]ብር[^][V]ከ[ሳን][ፈጠ][ድን] ወ[-]ልደ[V] አመ[,]ት[:]ከ[ስ]።" },
+              { time: 1.35, end: 1.40, text: "።" }, // Empty line example
+              { time: 1.41, end: 1.46, text: "እ[~]ግ[][V]ዚኦ[ፔር][ዴ]" },
+              { time: 1.47, end: 1.52, text: "አ[,][.]ነ[ነኒ][፴][ፈጠ][ድን]" },
+              { time: 1.53, end: 1.58, text: "ገብር[፡]ከ[ጠጠ,]።" },
+              { time: 1.59, end: 1.64, text: "።" }, // Another empty line
+              { time: 1.65, end: 1.70, text: "ገ[~][~][~]ብር[^][V]ከ[ሳን][ፈጠ][ድን]" },
+              { time: 1.71, end: 1.76, text: "ወ[-]ልደ[V] አመ[,]ት[:]ከ[ስ]።" },
             ]
           },
         ],
@@ -198,7 +215,7 @@
     const lyricsContainer = document.getElementById("lyrics-container");
     const audio = document.getElementById("audio");
 
-    // NEW: Simple parser that creates one symbol per melody line
+    // Function to parse text into character-symbol pairs
     function parseTextWithSymbols(text) {
       const result = [];
       let currentChar = '';
@@ -340,6 +357,36 @@
       }
     }
 
+    // NEW: Function to group segments into lines based on ።
+    function groupSegmentsIntoLines(segments) {
+      const lines = [];
+      let currentLine = [];
+
+      segments.forEach(segment => {
+        // Add segment to current line
+        currentLine.push(segment);
+
+        // Check if this segment ends with ። (not empty line)
+        if (segment.text.trim() !== "።" && segment.text.includes('።')) {
+          // This segment contains ። - end the line
+          lines.push([...currentLine]);
+          currentLine = [];
+        } else if (segment.text.trim() === "።") {
+          // This is an empty line - add it as a separate line
+          lines.push([segment]);
+          currentLine = [];
+        }
+        // Otherwise, continue adding to current line
+      });
+
+      // Add any remaining segments as the last line
+      if (currentLine.length > 0) {
+        lines.push(currentLine);
+      }
+
+      return lines;
+    }
+
     // Render lyrics
     function renderLyrics(lyricsTimestamp) {
       lyricsContainer.innerHTML = '';
@@ -353,29 +400,62 @@
         verseHeader.textContent = group.key;
         verseSection.appendChild(verseHeader);
 
-        // Create a paragraph container for all segments
-        const paragraphContainer = document.createElement("div");
-        paragraphContainer.className = "lyrics-paragraph";
+        // Group segments into lines based on ።
+        const lines = groupSegmentsIntoLines(group.data);
 
-        group.data.forEach((segment, segmentIndex) => {
-          const wordElement = renderWord(segment.text);
-          wordElement.dataset.time = segment.time;
-          wordElement.dataset.end = segment.end;
+        // Render each line
+        lines.forEach((lineSegments, lineIndex) => {
+          const lineContainer = document.createElement("div");
+          lineContainer.className = "lyrics-paragraph";
 
-          wordElement.onclick = () => {
-            audio.currentTime = segment.time;
-            audio.play();
-          };
+          lineSegments.forEach((segment, segmentIndex) => {
+            // Check if this is an empty line
+            if (segment.text.trim() === "።") {
+              const emptyLine = document.createElement("div");
+              emptyLine.classList.add("empty-line");
+              emptyLine.title = "Empty line";
+              emptyLine.dataset.time = segment.time;
+              emptyLine.dataset.end = segment.end;
+              emptyLine.style.cursor = 'pointer';
+              emptyLine.onclick = () => {
+                audio.currentTime = segment.time;
+                audio.play();
+              };
+              lineContainer.appendChild(emptyLine);
+            } else {
+              // Regular text - render normally
+              const segmentContainer = document.createElement("span");
+              segmentContainer.style.display = 'inline';
 
-          paragraphContainer.appendChild(wordElement);
+              const words = segment.text.split(/( )/);
 
-          // Add space between words
-          if (segmentIndex < group.data.length - 1) {
-            paragraphContainer.appendChild(document.createTextNode(' '));
-          }
+              words.forEach((word, wordIndex) => {
+                if (word === ' ') {
+                  // Add space
+                  segmentContainer.appendChild(document.createTextNode(' '));
+                } else if (word.trim()) {
+                  // Render word with symbols
+                  const wordElement = renderWord(word);
+                  segmentContainer.appendChild(wordElement);
+                }
+              });
+
+              // Add click event for audio playback
+              segmentContainer.dataset.time = segment.time;
+              segmentContainer.dataset.end = segment.end;
+              segmentContainer.style.cursor = 'pointer';
+              segmentContainer.onclick = () => {
+                audio.currentTime = segment.time;
+                audio.play();
+              };
+
+              lineContainer.appendChild(segmentContainer);
+            }
+          });
+
+          verseSection.appendChild(lineContainer);
         });
 
-        verseSection.appendChild(paragraphContainer);
         lyricsContainer.appendChild(verseSection);
       });
     }
