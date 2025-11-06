@@ -1,427 +1,757 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Lyrics Parser Tool</title>
-  <style>
-    body {
-      font-family: "Noto Sans Ethiopic", sans-serif;
-      line-height: 1.4;
-      font-size: 16px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #f8f9fa;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ge'ez Manuscript Transcription Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-    .input-section, .output-section {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
 
-    textarea {
-      width: 100%;
-      height: 300px;
-      font-family: "Noto Sans Ethiopic", monospace;
-      font-size: 14px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      resize: vertical;
-    }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
 
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
 
-    button:hover {
-      background-color: #2980b9;
-    }
+        .editor-container {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 600px;
+        }
 
-    .preview-section {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
+        .input-section {
+            flex: 1;
+            min-width: 400px;
+            padding: 25px;
+            border-right: 1px solid #eaeaea;
+        }
 
-    .preview-text {
-      font-size: 24px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
+        .output-section {
+            flex: 1;
+            min-width: 400px;
+            padding: 25px;
+            background-color: #f9f9f9;
+        }
 
-    .char-with-symbols {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      vertical-align: bottom;
-      margin: 0 2px;
-    }
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+        }
 
-    .melody-line {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 1px;
-      min-height: 12px;
-      font-family: 'Zemayared1', 'Noto Sans Ethiopic', sans-serif;
-    }
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-    .base-char {
-      font-size: 24px;
-      min-height: 25px;
-      display: flex;
-      align-items: flex-end;
-      font-family: 'Noto Sans Ethiopic', sans-serif;
-    }
+        .time-input {
+            flex: 1;
+        }
 
-    .black-symbol {
-      color: black;
-      font-size: 0.5em;
-      font-weight: bold;
-      margin: 0;
-      line-height: 0.8;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
 
-    .red-symbol {
-      color: red;
-      font-size: 0.5em;
-      font-weight: bold;
-      margin: 0;
-      line-height: 0.8;
-    }
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
 
-    .empty-symbol {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin: 0 1px;
-    }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4a6491;
+            box-shadow: 0 0 0 2px rgba(74, 100, 145, 0.2);
+        }
 
-    .code-block {
-      background-color: #f8f9fa;
-      padding: 15px;
-      border-radius: 5px;
-      border-left: 4px solid #3498db;
-      font-family: monospace;
-      white-space: pre-wrap;
-      font-size: 12px;
-      overflow-x: auto;
-    }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    .line-break {
-      display: block;
-      height: 10px;
-    }
+        .symbols-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f4f8;
+            border-radius: 8px;
+        }
 
-    /* Load Zemayared1 font */
-    @font-face {
-      font-family: 'Zemayared1';
-      src: url('./Zemayared1.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-  </style>
+        .symbols-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .symbol-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .symbol-btn {
+            padding: 8px 12px;
+            background-color: #4a6491;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .symbol-btn:hover {
+            background-color: #3a5479;
+            transform: translateY(-2px);
+        }
+
+        .special-btn {
+            background-color: #e67e22;
+        }
+
+        .special-btn:hover {
+            background-color: #d35400;
+        }
+
+        .instructions {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .output-area {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 200px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .primary-btn {
+            background-color: #4a6491;
+            color: white;
+            flex: 2;
+        }
+
+        .primary-btn:hover {
+            background-color: #3a5479;
+        }
+
+        .secondary-btn {
+            background-color: #eaeaea;
+            color: #333;
+            flex: 1;
+        }
+
+        .secondary-btn:hover {
+            background-color: #ddd;
+        }
+
+        .entry-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+        }
+
+        .entry-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eaeaea;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry-item:last-child {
+            border-bottom: none;
+        }
+
+        .entry-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .entry-text {
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1.1rem;
+            padding: 5px;
+        }
+
+        .icon-btn:hover {
+            color: #4a6491;
+        }
+
+        /* Preview styling */
+        .preview-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .preview-content {
+            font-family: 'Noto Sans Ethiopic', sans-serif;
+            font-size: 24px;
+            line-height: 1.6;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            min-height: 150px;
+        }
+
+        .preview-char {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 2px;
+            vertical-align: bottom;
+        }
+
+        .preview-base {
+            font-size: 24px;
+            min-height: 30px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .preview-symbol {
+            font-size: 12px;
+            line-height: 1;
+            margin-bottom: 2px;
+            font-family: 'Zemayared', 'Noto Sans Ethiopic', sans-serif;
+        }
+
+        .preview-black {
+            color: black;
+        }
+
+        .preview-red {
+            color: red;
+        }
+
+        .preview-empty {
+            color: #999;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eaeaea;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-container {
+                flex-direction: column;
+            }
+
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eaeaea;
+            }
+        }
+
+        /* Zemayared font */
+        @font-face {
+            font-family: 'Zemayared';
+            src: url('Zemayared1.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
+    <div class="container">
+        <header>
+            <h1>Ge'ez Chant Transcription Editor</h1>
+            <p class="subtitle">Create transcriptions with special symbols in brackets and angle brackets</p>
+        </header>
 
-  <h2>የውዳሴ ማርያም ጽሑፍ አተረጓጎሚ</h2>
+        <div class="editor-container">
+            <div class="input-section">
+                <h2 class="section-title">Transcription Input</h2>
 
-  <div class="container">
-    <div class="input-section">
-      <h3>ጽሑፍ አስገባ</h3>
-      <textarea id="input-text" placeholder="ጽሑፍህን እዚህ አስገባ (ለምሳሌ: ክቡ[ቡበ][,]‹ሠረ›ር ሞቱ[በእ][ጠጠ]‹ቀለ›)">
-ክቡ[ቡበ][,]‹ሠረ›ር ሞቱ[በእ][ጠጠ]‹ቀለ› ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ› በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር። ክቡ[ቡበ][,]‹ሠረ›ር ሞቱ[በእ][ጠጠ]‹ቀለ› ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ› በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር።</textarea>
-      <button onclick="parseText()">ጽሑፍ አተርጎም</button>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label for="start-time">Start Time</label>
+                        <input type="number" id="start-time" step="0.01" value="1.14">
+                    </div>
+                    <div class="time-input">
+                        <label for="end-time">End Time</label>
+                        <input type="number" id="end-time" step="0.01" value="1.18">
+                    </div>
+                </div>
+
+                <label for="transcription-text">Transcription Text</label>
+                <textarea id="transcription-text" placeholder="Enter Ge'ez text with symbols in brackets [...] and angle brackets ‹...›">ክቡ[ቡበ][,]‹ሠረ›ር</textarea>
+
+                <div class="symbols-panel">
+                    <h3 class="symbols-title">Special Symbols</h3>
+                    <div class="symbol-buttons">
+                        <button class="symbol-btn" data-symbol="[~]">[~]</button>
+                        <button class="symbol-btn" data-symbol="[;]">[;]</button>
+                        <button class="symbol-btn" data-symbol="[:]">[:]</button>
+                        <button class="symbol-btn" data-symbol="[,]">[,]</button>
+                        <button class="symbol-btn" data-symbol="[ሠረ]">[ሠረ]</button>
+                        <button class="symbol-btn" data-symbol="[እግ]">[እግ]</button>
+                        <button class="symbol-btn" data-symbol="[ሰላ]">[ሰላ]</button>
+                        <button class="symbol-btn" data-symbol="[ለኪ]">[ለኪ]</button>
+                        <button class="symbol-btn" data-symbol="[በእ]">[በእ]</button>
+                        <button class="symbol-btn" data-symbol="[ፈ]">[ፈ]</button>
+                        <button class="symbol-btn" data-symbol="[ቀ]">[ቀ]</button>
+                        <button class="symbol-btn" data-symbol="[ጠጠ]">[ጠጠ]</button>
+                        <button class="symbol-btn" data-symbol="[ዴ]">[ዴ]</button>
+                        <button class="symbol-btn" data-symbol="[ሰአ]">[ሰአ]</button>
+                        <button class="symbol-btn" data-symbol="[አይ]">[አይ]</button>
+                        <button class="symbol-btn" data-symbol="[ቡበ]">[ቡበ]</button>
+                        <button class="symbol-btn" data-symbol="[ፔር]">[ፔር]</button>
+                        <button class="symbol-btn" data-symbol="[ነኒ]">[ነኒ]</button>
+                        <button class="symbol-btn special-btn" data-symbol="‹ሠረ›">‹ሠረ›</button>
+                        <button class="symbol-btn special-btn" data-symbol="‹ቀለ›">‹ቀለ›</button>
+                        <button class="symbol-btn special-btn" data-symbol="‹ነኪ›">‹ነኪ›</button>
+                    </div>
+                    <p class="instructions">
+                        Click on symbols to insert them at the cursor position. Use brackets [...] for variant readings and angle brackets ‹...› for editorial corrections.
+                    </p>
+                </div>
+
+                <div class="actions">
+                    <button id="add-entry" class="primary-btn">Add Transcription Entry</button>
+                    <button id="clear-text" class="secondary-btn">Clear Text</button>
+                </div>
+
+                <div class="preview-container">
+                    <h3 class="preview-title">Rendered Preview (Zemayared Font for Symbols)</h3>
+                    <div class="preview-content" id="preview-content">
+                        {/* Preview will be generated here */}
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2 class="section-title">Output Preview</h2>
+
+                <div class="output-area" id="output-preview">
+                    {/* Output will be generated here */}
+                </div>
+
+                <div class="actions">
+                    <button id="export-json" class="primary-btn">Export as JSON</button>
+                    <button id="copy-output" class="secondary-btn">Copy to Clipboard</button>
+                </div>
+
+                <h3 class="section-title">Entries List</h3>
+                <div class="entry-list" id="entries-list">
+                    {/* Entries will be listed here */}
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Ge'ez Manuscript Transcription Editor | Designed for scholarly transcription work</p>
+        </footer>
     </div>
 
-    <div class="output-section">
-      <h3>የተከፋፈለ ጽሑፍ</h3>
-      <div id="output" class="code-block">
-// ውጤቱ እዚህ ይታያል...
-      </div>
-    </div>
-  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data
+            const sampleData = [
+                { time: 1.14, end: 1.18, text: "ክቡ[ቡበ][,]‹ሠረ›ር" },
+                { time: 1.19, end: 1.23, text: "ሞቱ[በእ][ጠጠ]‹ቀለ›" },
+                { time: 1.24, end: 1.28, text: "ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ›" },
+                { time: 1.29, end: 1.34, text: "በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር።" },
+                { time: 1.35, end: 1.40, text: "።" },
+                { time: 1.41, end: 1.46, text: "እ[~]ግ[][V]ዚኦ[ፔር][ዴ]" },
+                { time: 1.47, end: 1.52, text: "አ[,][.]ነ[ነኒ][፴][ፈጠ][ድን]" },
+                { time: 1.53, end: 1.58, text: "ገብር[:]ከ[ጠጠ,]።" },
+                { time: 1.59, end: 1.64, text: "።" },
+                { time: 1.65, end: 1.70, text: "ገ[~][~][~]ብር[^][V]ከ[ሳን][ፈጠ][ድን]" },
+                { time: 1.71, end: 1.76, text: "ወ[-]ልደ[V] አመ[,]ት[:]ከ[ስ]።" },
+            ];
 
-  <div class="preview-section">
-    <h3>የጽሑፍ ቅጂ</h3>
-    <div id="preview" class="preview-text">
-      <!-- Preview will be rendered here -->
-    </div>
-  </div>
+            let entries = [...sampleData];
 
-  <script>
-    // Function to parse text into character-symbol pairs
-    function parseTextWithSymbols(text) {
-      const result = [];
-      let currentChar = '';
-      let symbols = [];
+            // DOM elements
+            const startTimeInput = document.getElementById('start-time');
+            const endTimeInput = document.getElementById('end-time');
+            const transcriptionText = document.getElementById('transcription-text');
+            const addEntryBtn = document.getElementById('add-entry');
+            const clearTextBtn = document.getElementById('clear-text');
+            const exportJsonBtn = document.getElementById('export-json');
+            const copyOutputBtn = document.getElementById('copy-output');
+            const outputPreview = document.getElementById('output-preview');
+            const entriesList = document.getElementById('entries-list');
+            const symbolButtons = document.querySelectorAll('.symbol-btn');
+            const previewContent = document.getElementById('preview-content');
 
-      let i = 0;
-      while (i < text.length) {
-        const char = text[i];
+            // Initialize the editor with sample data
+            updateOutputPreview();
+            updateEntriesList();
+            updatePreview();
 
-        if (char === '[') {
-          // Found black symbol
-          const symbolEnd = text.indexOf(']', i);
-          if (symbolEnd !== -1) {
-            const symbolContent = text.substring(i + 1, symbolEnd);
-            symbols.push({
-              content: symbolContent,
-              type: 'black'
+            // Add symbol buttons functionality
+            symbolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const symbol = this.getAttribute('data-symbol');
+                    insertAtCursor(transcriptionText, symbol);
+                    updatePreview();
+                });
             });
-            i = symbolEnd + 1;
-            continue;
-          }
-        } else if (char === '‹') {
-          // Found red symbol
-          const symbolEnd = text.indexOf('›', i);
-          if (symbolEnd !== -1) {
-            const symbolContent = text.substring(i + 1, symbolEnd);
-            symbols.push({
-              content: symbolContent,
-              type: 'red'
-            });
-            i = symbolEnd + 1;
-            continue;
-          }
-        } else if (char === '<') {
-          // Found red symbol (alternative)
-          const symbolEnd = text.indexOf('>', i);
-          if (symbolEnd !== -1) {
-            const symbolContent = text.substring(i + 1, symbolEnd);
-            symbols.push({
-              content: symbolContent,
-              type: 'red'
-            });
-            i = symbolEnd + 1;
-            continue;
-          }
-        } else {
-          // Regular character
-          if (currentChar) {
-            result.push({
-              char: currentChar,
-              symbols: [...symbols]
-            });
-            symbols = [];
-          }
-          currentChar = char;
-        }
-        i++;
-      }
 
-      // Add last character
-      if (currentChar || symbols.length > 0) {
-        result.push({
-          char: currentChar,
-          symbols: [...symbols]
-        });
-      }
+            // Update preview when text changes
+            transcriptionText.addEventListener('input', updatePreview);
 
-      return result;
-    }
+            // Function to insert text at cursor position
+            function insertAtCursor(textarea, text) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const value = textarea.value;
 
-    // NEW: Function to split text into segments with line breaks at ።
-    function splitTextIntoSegments(text) {
-      const segments = [];
-      let currentSegment = '';
+                textarea.value = value.substring(0, start) + text + value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + text.length;
+                textarea.focus();
+            }
 
-      // Split by spaces but preserve them
-      const words = text.split(/( )/); // Split by spaces but keep the spaces
+            // Function to parse text into character-symbol pairs
+            function parseTextWithSymbols(text) {
+                const result = [];
+                let currentChar = '';
+                let symbols = [];
 
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
+                let i = 0;
+                while (i < text.length) {
+                    const char = text[i];
 
-        if (word.trim() === '።') {
-          // Add current segment plus the ።
-          if (currentSegment) {
-            segments.push(currentSegment + word);
-          } else {
-            segments.push(word);
-          }
-          // Add line break marker
-          segments.push('\n');
-          currentSegment = '';
-        } else if (word === ' ' && currentSegment === '') {
-          // Preserve leading spaces
-          currentSegment += word;
-        } else if (word === ' ' && i < words.length - 1) {
-          // Add space to current segment
-          currentSegment += word;
-        } else {
-          // Add word to current segment
-          currentSegment += word;
-        }
-      }
+                    if (char === '[') {
+                        // Found black symbol
+                        const symbolEnd = text.indexOf(']', i);
+                        if (symbolEnd !== -1) {
+                            const symbolContent = text.substring(i + 1, symbolEnd);
+                            symbols.push({
+                                content: symbolContent,
+                                type: 'black'
+                            });
+                            i = symbolEnd + 1;
+                            continue;
+                        }
+                    } else if (char === '‹') {
+                        // Found red symbol
+                        const symbolEnd = text.indexOf('›', i);
+                        if (symbolEnd !== -1) {
+                            const symbolContent = text.substring(i + 1, symbolEnd);
+                            symbols.push({
+                                content: symbolContent,
+                                type: 'red'
+                            });
+                            i = symbolEnd + 1;
+                            continue;
+                        }
+                    } else if (char === '<') {
+                        // Found red symbol (alternative)
+                        const symbolEnd = text.indexOf('>', i);
+                        if (symbolEnd !== -1) {
+                            const symbolContent = text.substring(i + 1, symbolEnd);
+                            symbols.push({
+                                content: symbolContent,
+                                type: 'red'
+                            });
+                            i = symbolEnd + 1;
+                            continue;
+                        }
+                    } else {
+                        // Regular character
+                        if (currentChar) {
+                            result.push({
+                                char: currentChar,
+                                symbols: [...symbols]
+                            });
+                            symbols = [];
+                        }
+                        currentChar = char;
+                    }
+                    i++;
+                }
 
-      // Add the last segment if any
-      if (currentSegment.trim()) {
-        segments.push(currentSegment);
-      }
+                // Add last character
+                if (currentChar || symbols.length > 0) {
+                    result.push({
+                        char: currentChar,
+                        symbols: [...symbols]
+                    });
+                }
 
-      return segments;
-    }
+                return result;
+            }
 
-    // Function to render preview
-    function renderPreview(text) {
-      const preview = document.getElementById('preview');
-      preview.innerHTML = '';
+            // Update preview function
+            function updatePreview() {
+                const text = transcriptionText.value;
+                previewContent.innerHTML = '';
 
-      const segments = splitTextIntoSegments(text);
+                if (!text.trim()) {
+                    previewContent.textContent = 'Preview will appear here...';
+                    return;
+                }
 
-      segments.forEach((segment, segmentIndex) => {
-        if (segment === '\n') {
-          // Add line break
-          const lineBreak = document.createElement('div');
-          lineBreak.classList.add('line-break');
-          preview.appendChild(lineBreak);
-        } else {
-          // Render text segment
-          const segmentContainer = document.createElement('span');
-          segmentContainer.style.display = 'inline';
+                const parsed = parseTextWithSymbols(text);
 
-          const words = segment.split(/( )/); // Split by spaces but keep them
+                parsed.forEach((item, index) => {
+                    const charContainer = document.createElement('span');
+                    charContainer.classList.add('preview-char');
 
-          words.forEach((word, wordIndex) => {
-            if (word === ' ') {
-              // Add space
-              segmentContainer.appendChild(document.createTextNode(' '));
-            } else if (word.trim()) {
-              // Render word with symbols
-              const wordContainer = document.createElement('span');
-              wordContainer.style.display = 'inline-block';
-              wordContainer.style.margin = '0 2px';
+                    // Add symbols (reversed so last symbol appears closest to text)
+                    const reversedSymbols = [...item.symbols].reverse();
 
-              const parsed = parseTextWithSymbols(word);
+                    reversedSymbols.forEach((symbol, symbolIndex) => {
+                        const symbolSpan = document.createElement('span');
+                        symbolSpan.classList.add('preview-symbol');
 
-              parsed.forEach((item, index) => {
-                const charWithSymbols = document.createElement("span");
-                charWithSymbols.classList.add("char-with-symbols");
+                        if (symbol.content === "") {
+                            symbolSpan.classList.add('preview-empty');
+                            symbolSpan.textContent = '•';
+                        } else {
+                            symbolSpan.classList.add(`preview-${symbol.type}`);
+                            symbolSpan.textContent = symbol.content;
+                        }
 
-                // Create ONE symbol per melody line (stacked vertically)
-                // Reverse the symbols so last symbol appears closest to text
-                const reversedSymbols = [...item.symbols].reverse();
+                        charContainer.appendChild(symbolSpan);
+                    });
 
-                reversedSymbols.forEach((symbol, symbolIndex) => {
-                  const melodyLineDiv = document.createElement("div");
-                  melodyLineDiv.classList.add("melody-line");
+                    // Add base character
+                    const baseChar = document.createElement('span');
+                    baseChar.classList.add('preview-base');
+                    baseChar.textContent = item.char;
+                    charContainer.appendChild(baseChar);
 
-                  const symbolSpan = document.createElement("span");
-                  if (symbol.content === "") {
-                    // Empty symbol
-                    symbolSpan.classList.add("empty-symbol");
-                    symbolSpan.innerHTML = "•";
-                    symbolSpan.style.color = "lightgray";
-                    symbolSpan.title = "Empty symbol";
-                  } else {
-                    // Non-empty symbol
-                    symbolSpan.classList.add(`${symbol.type}-symbol`);
-                    symbolSpan.textContent = symbol.content;
-                  }
-                  melodyLineDiv.appendChild(symbolSpan);
-                  charWithSymbols.appendChild(melodyLineDiv);
+                    previewContent.appendChild(charContainer);
+                });
+            }
+
+            // Add entry button functionality
+            addEntryBtn.addEventListener('click', function() {
+                const startTime = parseFloat(startTimeInput.value);
+                const endTime = parseFloat(endTimeInput.value);
+                const text = transcriptionText.value.trim();
+
+                if (isNaN(startTime) || isNaN(endTime) || !text) {
+                    alert('Please enter valid time values and text');
+                    return;
+                }
+
+                entries.push({
+                    time: startTime,
+                    end: endTime,
+                    text: text
                 });
 
-                // Add base character
-                const baseChar = document.createElement("span");
-                baseChar.classList.add("base-char");
-                baseChar.textContent = item.char;
-                charWithSymbols.appendChild(baseChar);
+                updateOutputPreview();
+                updateEntriesList();
 
-                wordContainer.appendChild(charWithSymbols);
-              });
+                // Clear the text area for next entry
+                transcriptionText.value = '';
+                updatePreview();
 
-              segmentContainer.appendChild(wordContainer);
+                // Auto-increment times for convenience
+                startTimeInput.value = (endTime + 0.01).toFixed(2);
+                endTimeInput.value = (parseFloat(startTimeInput.value) + 0.04).toFixed(2);
+            });
+
+            // Clear text button functionality
+            clearTextBtn.addEventListener('click', function() {
+                transcriptionText.value = '';
+                transcriptionText.focus();
+                updatePreview();
+            });
+
+            // Export JSON button functionality
+            exportJsonBtn.addEventListener('click', function() {
+                const dataStr = JSON.stringify(entries, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+                const exportFileDefaultName = 'geez_transcription.json';
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            });
+
+            // Copy output button functionality
+            copyOutputBtn.addEventListener('click', function() {
+                const textToCopy = outputPreview.textContent;
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    // Show a temporary success message
+                    const originalText = copyOutputBtn.textContent;
+                    copyOutputBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyOutputBtn.textContent = originalText;
+                    }, 2000);
+                });
+            });
+
+            // Update output preview
+            function updateOutputPreview() {
+                let outputText = 'data: [\n';
+
+                entries.forEach((entry, index) => {
+                    outputText += `              { time: ${entry.time}, end: ${entry.end}, text: "${entry.text}" }`;
+                    if (index < entries.length - 1) {
+                        outputText += ',';
+                    }
+                    outputText += '\n';
+                });
+
+                outputText += '            ]';
+                outputPreview.textContent = outputText;
             }
-          });
 
-          preview.appendChild(segmentContainer);
-        }
-      });
-    }
+            // Update entries list
+            function updateEntriesList() {
+                entriesList.innerHTML = '';
 
-    // Main parse function
-    function parseText() {
-      const inputText = document.getElementById('input-text').value;
-      const segments = splitTextIntoSegments(inputText);
+                entries.forEach((entry, index) => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'entry-item';
 
-      let output = '';
-      let dataArray = [];
-      let lineIndex = 0;
+                    entryElement.innerHTML = `
+                        <div class="entry-time">${entry.time}-${entry.end}</div>
+                        <div class="entry-text">${entry.text}</div>
+                        <div class="entry-actions">
+                            <button class="icon-btn edit-btn" data-index="${index}">✏️</button>
+                            <button class="icon-btn delete-btn" data-index="${index}">🗑️</button>
+                        </div>
+                    `;
 
-      let currentLine = '';
-      segments.forEach(segment => {
-        if (segment === '\n') {
-          // End of line - add to data array
-          if (currentLine.trim()) {
-            const time = 1.14 + (lineIndex * 0.1);
-            const dataObject = {
-              time: time.toFixed(2),
-              end: (time + 0.04).toFixed(2),
-              text: currentLine.trim()
-            };
-            dataArray.push(dataObject);
-            output += `{ time: ${dataObject.time}, end: ${dataObject.end}, text: "${currentLine.trim()}" },\n`;
-            lineIndex++;
-            currentLine = '';
-          }
-        } else {
-          // Add segment to current line
-          currentLine += segment;
-        }
-      });
+                    entriesList.appendChild(entryElement);
+                });
 
-      // Add the last line if any
-      if (currentLine.trim()) {
-        const time = 1.14 + (lineIndex * 0.1);
-        const dataObject = {
-          time: time.toFixed(2),
-          end: (time + 0.04).toFixed(2),
-          text: currentLine.trim()
-        };
-        dataArray.push(dataObject);
-        output += `{ time: ${dataObject.time}, end: ${dataObject.end}, text: "${currentLine.trim()}" },\n`;
-      }
+                // Add event listeners for edit and delete buttons
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        editEntry(index);
+                    });
+                });
 
-      // Display output
-      document.getElementById('output').textContent = output;
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        deleteEntry(index);
+                    });
+                });
+            }
 
-      // Render preview
-      renderPreview(inputText);
-    }
+            // Edit entry
+            function editEntry(index) {
+                const entry = entries[index];
 
-    // Initialize with example
-    document.addEventListener('DOMContentLoaded', function() {
-      parseText();
-    });
-  </script>
+                startTimeInput.value = entry.time;
+                endTimeInput.value = entry.end;
+                transcriptionText.value = entry.text;
+                updatePreview();
 
+                // Remove the entry from the list
+                entries.splice(index, 1);
+
+                updateOutputPreview();
+                updateEntriesList();
+            }
+
+            // Delete entry
+            function deleteEntry(index) {
+                if (confirm('Are you sure you want to delete this entry?')) {
+                    entries.splice(index, 1);
+                    updateOutputPreview();
+                    updateEntriesList();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
