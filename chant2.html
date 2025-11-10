@@ -195,10 +195,47 @@
             ]
           }
         ]
-      }
+      },
+      {
+        title: "ምስባክ ዘጥቅምት 21",
+        audioSrc: "./symbols/compressed/01-WedaseMar_Monday.m4a",
+        lyricsTimestamp: [
+          {
+            key: "ዘሠኑይ",
+            data: [
+              { time: 1.14, end: 1.18, text: "ክቡ[ቡበ][,]‹ሠረ›ር" },
+              { time: 1.19, end: 1.23, text: "ሞቱ[በእ][ጠጠ]‹ቀለ›" },
+              { time: 1.24, end: 1.28, text: "ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ›" },
+              { time: 1.29, end: 1.34, text: "በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር።" },
+              { time: 1.35, end: 1.40, text: "።" }, // Empty line example
+              { time: 1.41, end: 1.46, text: "እ[~]ግ[][V]ዚኦ[ፔር][ዴ]" },
+              { time: 1.47, end: 1.52, text: "አ[,][.]ነ[ነኒ][፴][ፈጠ][ድን]" },
+              { time: 1.53, end: 1.58, text: "ገብር[:]ከ[ጠጠ,]።" },
+              { time: 1.59, end: 1.64, text: "።" }, // Another empty line
+              { time: 1.65, end: 1.70, text: "ገ[~][~][~]ብር[^][V]ከ[ሳን][ፈጠ][ድን]" },
+              { time: 1.71, end: 1.76, text: "ወ[-]ልደ[V] አመ[,]ት[:]ከ[ስ]።" },
+            ]
+          },
+        ],
+        translationData: [
+          {
+            key: "ፈቀደ እግዚእ",
+            data: [
+              {
+                reading: {
+                  am: "-",
+                  en: "-",
+                  gz: "-"
+                },
+                commentaries: []
+              }
+            ]
+          }
+        ]
+      },
     ];
 
-    const symbolSounds = {
+   const symbolSounds = {
       "ለኪ": "./symbols/compressed/1.selamleki.m4a",
       "ነኪ": "./symbols/compressed/6.yekednekitsyone.m4a",
       "፴": "./symbols/compressed/11.selasa.m4a",
@@ -209,6 +246,12 @@
       "ሰአ": "./symbols/compressed/22.sealilene.m4a",
       "ኃኒ": "./symbols/compressed/23.medhanit.m4a",
       "ትስ": "./symbols/compressed/24.tsali.m4a",
+      "ዴ": "./symbols/compressed/29.weyastedelu.m4a",
+      "ሴፍ": "./symbols/compressed/30.yosefe.m4a",
+      "ሮን": "./symbols/compressed/34.beterearone.m4a",
+      "አቡ": "./symbols/compressed/41.abuhu.m4a",
+      "ጠጠ": "./symbols/compressed/42.wesetete.m4a",
+      "ጎል": "./symbols/compressed/61.gole.m4a",
     };
 
     // DOM elements
@@ -457,12 +500,29 @@
         });
 
         lyricsContainer.appendChild(verseSection);
+
       });
     }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      renderLyrics(pageData[0].lyricsTimestamp);
+      // Log all pageData
+      console.log('Loading all pageData:', pageData);
+      pageData.forEach((p, i) => console.log(`pageData[${i}]`, p));
+
+      // Combine all groups from every page and prefix keys with page title so we can render all at once
+      const combinedGroups = [];
+      pageData.forEach(page => {
+        page.lyricsTimestamp.forEach(group => {
+          combinedGroups.push({
+            ...group,
+            key: `${page.title} · ${group.key}`
+          });
+        });
+      });
+
+      // Render combined groups (renders all pages' groups)
+      renderLyrics(combinedGroups);
     });
   </script>
 

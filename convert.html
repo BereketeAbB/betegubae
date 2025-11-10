@@ -90,7 +90,7 @@
             color: #555;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #ddd;
@@ -99,7 +99,7 @@
             transition: all 0.3s;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #4a6491;
             box-shadow: 0 0 0 2px rgba(74, 100, 145, 0.2);
@@ -139,7 +139,10 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: 'Zemayared', 'Noto Sans Ethiopic', sans-serif;
         }
+
+
 
         .symbol-btn:hover {
             background-color: #3a5479;
@@ -148,10 +151,13 @@
 
         .special-btn {
             background-color: #e67e22;
+            font-family: 'Zemayared', 'Noto Sans Ethiopic', sans-serif;
         }
 
         .special-btn:hover {
             background-color: #d35400;
+            font-family: 'Zemayared', 'Noto Sans Ethiopic', sans-serif;
+
         }
 
         .instructions {
@@ -280,14 +286,18 @@
             background-color: #f8f9fa;
             border-radius: 6px;
             min-height: 150px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
         }
 
         .preview-char {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 2px;
+            margin: 0;
             vertical-align: bottom;
+            position: relative;
         }
 
         .preview-base {
@@ -314,6 +324,32 @@
 
         .preview-empty {
             color: #999;
+        }
+
+        .preview-multi-symbol {
+            position: absolute;
+            top: -15px;
+            font-size: 12px;
+            line-height: 1;
+            font-family: 'Zemayared', 'Noto Sans Ethiopic', sans-serif;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .preview-multi-black {
+            color: black;
+        }
+
+        .preview-multi-red {
+            color: red;
+        }
+
+        .multi-symbol-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f4f8;
+            border-radius: 6px;
+            font-size: 0.9rem;
         }
 
         footer {
@@ -343,6 +379,71 @@
             font-weight: normal;
             font-style: normal;
         }
+
+        /* Toggle switch styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #4a6491;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+
+
+        input:checked + .toggle-slider {
+            background-color: #e67e22;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        .toggle-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -369,52 +470,77 @@
                 </div>
 
                 <label for="transcription-text">Transcription Text</label>
-                <textarea id="transcription-text" placeholder="Enter Ge'ez text with symbols in brackets [...] and angle brackets ‹...›">ክቡ[ቡበ][,]‹ሠረ›ር</textarea>
+                <textarea id="transcription-text" placeholder="Enter Ge'ez text with symbols in brackets [...] and angle brackets ‹...›. Use (CHARS)[SYMBOL] for symbols spanning multiple characters.">እ[~][`]ስመ[መጽ] መ[`]ምህረ[.][.] ሕ[,]ግ[ቀ]</textarea>
+
+                <div class="toggle-container">
+                    <span class="toggle-label">Symbol Wrapping:</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="wrap-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-text" id="wrap-status">Square Brackets [ ]</span>
+                </div>
 
                 <div class="symbols-panel">
                     <h3 class="symbols-title">Special Symbols</h3>
                     <div class="symbol-buttons">
-                        <button class="symbol-btn" data-symbol="[~]">[~]</button>
-                        <button class="symbol-btn" data-symbol="[;]">[;]</button>
-                        <button class="symbol-btn" data-symbol="[:]">[:]</button>
-                        <button class="symbol-btn" data-symbol="[,]">[,]</button>
-                        <button class="symbol-btn" data-symbol="[ሠረ]">[ሠረ]</button>
-                        <button class="symbol-btn" data-symbol="[እግ]">[እግ]</button>
-                        <button class="symbol-btn" data-symbol="[ሰላ]">[ሰላ]</button>
-                        <button class="symbol-btn" data-symbol="[ለኪ]">[ለኪ]</button>
-                        <button class="symbol-btn" data-symbol="[በእ]">[በእ]</button>
-                        <button class="symbol-btn" data-symbol="[ፈ]">[ፈ]</button>
-                        <button class="symbol-btn" data-symbol="[ቀ]">[ቀ]</button>
-                        <button class="symbol-btn" data-symbol="[ጠጠ]">[ጠጠ]</button>
-                        <button class="symbol-btn" data-symbol="[ዴ]">[ዴ]</button>
-                        <button class="symbol-btn" data-symbol="[ሰአ]">[ሰአ]</button>
-                        <button class="symbol-btn" data-symbol="[አይ]">[አይ]</button>
-                        <button class="symbol-btn" data-symbol="[ቡበ]">[ቡበ]</button>
-                        <button class="symbol-btn" data-symbol="[ፔር]">[ፔር]</button>
-                        <button class="symbol-btn" data-symbol="[ነኒ]">[ነኒ]</button>
-                        <button class="symbol-btn special-btn" data-symbol="‹ሠረ›">‹ሠረ›</button>
-                        <button class="symbol-btn special-btn" data-symbol="‹ቀለ›">‹ቀለ›</button>
-                        <button class="symbol-btn special-btn" data-symbol="‹ነኪ›">‹ነኪ›</button>
+                        <button class="symbol-btn" data-symbol="~">~</button>
+                        <button class="symbol-btn" data-symbol=";">;</button>
+                        <button class="symbol-btn" data-symbol=":">:</button>
+                        <button class="symbol-btn" data-symbol="-">-</button>
+                        <button class="symbol-btn" data-symbol="`">`</button>
+                        <button class="symbol-btn" data-symbol=".">.</button>
+                        <button class="symbol-btn" data-symbol="~">~</button>
+                        <button class="symbol-btn" data-symbol="^">^</button>
+                        <button class="symbol-btn" data-symbol="^">V</button>
+                        <button class="symbol-btn" data-symbol=",">,</button>
+                        <button class="symbol-btn" data-symbol="ሠረ">ሠረ</button>
+                        <button class="symbol-btn" data-symbol="እግ">እግ</button>
+                        <button class="symbol-btn" data-symbol="ሰላ">ሰላ</button>
+                        <button class="symbol-btn" data-symbol="ለኪ">ለኪ</button>
+                        <button class="symbol-btn" data-symbol="በእ">በእ</button>
+                        <button class="symbol-btn" data-symbol="ፈ">ፈ</button>
+                        <button class="symbol-btn" data-symbol="ቀ">ቀ</button>
+                        <button class="symbol-btn" data-symbol="ጠጠ">ጠጠ</button>
+                        <button class="symbol-btn" data-symbol="ዴ">ዴ</button>
+                        <button class="symbol-btn" data-symbol="ሰአ">ሰአ</button>
+                        <button class="symbol-btn" data-symbol="አይ">አይ</button>
+                        <button class="symbol-btn" data-symbol="ቡበ">ቡበ</button>
+                        <button class="symbol-btn" data-symbol="ቡበ">መጽ</button>
+                        <button class="symbol-btn" data-symbol="ፔር">ፔር</button>
+                        <button class="symbol-btn" data-symbol="ነኒ">ነኒ</button>
+                        <button class="symbol-btn special-btn" data-symbol="ሠረ">ሠረ</button>
+                        <button class="symbol-btn special-btn" data-symbol="ቀለ">ቀለ</button>
+                        <button class="symbol-btn special-btn" data-symbol="ነኪ">ነኪ</button>
                     </div>
                     <p class="instructions">
-                        Click on symbols to insert them at the cursor position. Use brackets [...] for variant readings and angle brackets ‹...› for editorial corrections.
+                        Click on symbols to insert them at the cursor position. Use brackets [...] for variant readings and angle brackets ‹...› for editorial corrections. Use (CHARS)[SYMBOL] for symbols spanning multiple characters.
                     </p>
+                    <div class="multi-symbol-info">
+                        <strong>Multi-character symbols:</strong> Use parentheses to specify which characters the symbol applies to, e.g., (ገብ)[~] will place the tilde symbol over both ገ and ብ characters.
+                    </div>
                 </div>
 
                 <div class="actions">
                     <button id="add-entry" class="primary-btn">Add Transcription Entry</button>
                     <button id="clear-text" class="secondary-btn">Clear Text</button>
                 </div>
+            </div>
 
+            <div class="output-section">
                 <div class="preview-container">
                     <h3 class="preview-title">Rendered Preview (Zemayared Font for Symbols)</h3>
                     <div class="preview-content" id="preview-content">
                         {/* Preview will be generated here */}
                     </div>
                 </div>
-            </div>
+                &nbsp;
+                &nbsp;
+                <h3 class="section-title">Entries List</h3>
+                <div class="entry-list" id="entries-list">
+                    {/* Entries will be listed here */}
+                </div>
 
-            <div class="output-section">
                 <h2 class="section-title">Output Preview</h2>
 
                 <div class="output-area" id="output-preview">
@@ -426,10 +552,9 @@
                     <button id="copy-output" class="secondary-btn">Copy to Clipboard</button>
                 </div>
 
-                <h3 class="section-title">Entries List</h3>
-                <div class="entry-list" id="entries-list">
-                    {/* Entries will be listed here */}
-                </div>
+
+
+
             </div>
         </div>
 
@@ -442,20 +567,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Sample data
             const sampleData = [
-                { time: 1.14, end: 1.18, text: "ክቡ[ቡበ][,]‹ሠረ›ር" },
-                { time: 1.19, end: 1.23, text: "ሞቱ[በእ][ጠጠ]‹ቀለ›" },
-                { time: 1.24, end: 1.28, text: "ለ[,][~]ጻድ[.][,]ቅ[ፈ][ቀ]‹ነኪ›" },
-                { time: 1.29, end: 1.34, text: "በቅ[~]ድመ[,] እ[V]ግዚ[.][.]ብሔር።" },
-                { time: 1.35, end: 1.40, text: "።" },
-                { time: 1.41, end: 1.46, text: "እ[~]ግ[][V]ዚኦ[ፔር][ዴ]" },
-                { time: 1.47, end: 1.52, text: "አ[,][.]ነ[ነኒ][፴][ፈጠ][ድን]" },
-                { time: 1.53, end: 1.58, text: "ገብር[:]ከ[ጠጠ,]።" },
-                { time: 1.59, end: 1.64, text: "።" },
-                { time: 1.65, end: 1.70, text: "ገ[~][~][~]ብር[^][V]ከ[ሳን][ፈጠ][ድን]" },
-                { time: 1.71, end: 1.76, text: "ወ[-]ልደ[V] አመ[,]ት[:]ከ[ስ]።" },
+              { time: 1.14, end: 1.18, text: "እ[~][`]ስመ[መጽ] መ[`]ምህረ[.][.] ሕ[,]ግ[ቀ]" },
+              { time: 1.19, end: 1.23, text: "ይሁ[^] ብ በረከተ።" },
+              { time: 1.24, end: 1.28, text: "ወ[-][`]የሐ[፡:]ው[ብዑ][,]ር[][ነኒ]" },
+              { time: 1.29, end: 1.33, text: "እምኃ[,][.]ይል[ነኒ][ር]" },
+              { time: 1.34, end: 1.38, text: "ው[V]ስተ ኃ[:]ይል[ጠጠ:,]" },
+              { time: 1.39, end: 1.43, text: "ወ[`][፴][~]ያ[][][.]ስተ[][:][,]ርኢ[][ነፍ][ቀ] አ[`]ምላከ አ[`]ማል[፴]ክት[" }
             ];
 
             let entries = [...sampleData];
+            let useSquareBrackets = true; // Default to square brackets
 
             // DOM elements
             const startTimeInput = document.getElementById('start-time');
@@ -469,17 +590,37 @@
             const entriesList = document.getElementById('entries-list');
             const symbolButtons = document.querySelectorAll('.symbol-btn');
             const previewContent = document.getElementById('preview-content');
+            const wrapToggle = document.getElementById('wrap-toggle');
+            const wrapStatus = document.getElementById('wrap-status');
 
             // Initialize the editor with sample data
             updateOutputPreview();
             updateEntriesList();
             updatePreview();
 
+            // Toggle switch functionality
+            wrapToggle.addEventListener('change', function() {
+                useSquareBrackets = !this.checked;
+                wrapStatus.textContent = useSquareBrackets ? "Square Brackets [ ]" : "Angle Brackets < >";
+            });
+
             // Add symbol buttons functionality
             symbolButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const symbol = this.getAttribute('data-symbol');
-                    insertAtCursor(transcriptionText, symbol);
+                    const isSpecial = this.classList.contains('special-btn');
+
+                    // Apply appropriate wrapping based on toggle state and button type
+                    let wrappedSymbol;
+                    if (isSpecial) {
+                        // Special buttons always use angle brackets
+                        wrappedSymbol = useSquareBrackets ? `‹${symbol}›` : `<${symbol}>`;
+                    } else {
+                        // Regular buttons use the selected wrapping
+                        wrappedSymbol = useSquareBrackets ? `[${symbol}]` : `<${symbol}>`;
+                    }
+
+                    insertAtCursor(transcriptionText, wrappedSymbol);
                     updatePreview();
                 });
             });
@@ -499,24 +640,72 @@
             }
 
             // Function to parse text into character-symbol pairs
+// Function to parse text into character-symbol pairs
             function parseTextWithSymbols(text) {
                 const result = [];
-                let currentChar = '';
-                let symbols = [];
-
                 let i = 0;
+
                 while (i < text.length) {
                     const char = text[i];
 
+                    // Handle spaces - add them as regular characters with special handling
+                    if (char === ' ') {
+                        result.push({
+                            char: ' ',
+                            symbols: [],
+                            multiSymbols: [],
+                            isSpace: true
+                        });
+                        i++;
+                        continue;
+                    }
+
+                    // Check for multi-character symbol pattern: (CHARS)[SYMBOL]
+                    if (char === '(') {
+                        const charsEnd = text.indexOf(')', i);
+                        if (charsEnd !== -1) {
+                            const symbolStart = text.indexOf('[', charsEnd);
+                            const symbolEnd = text.indexOf(']', symbolStart);
+
+                            if (symbolStart !== -1 && symbolEnd !== -1) {
+                                const chars = text.substring(i + 1, charsEnd);
+                                const symbolContent = text.substring(symbolStart + 1, symbolEnd);
+
+                                // Add each character with the multi-symbol
+                                for (let j = 0; j < chars.length; j++) {
+                                    result.push({
+                                        char: chars[j],
+                                        symbols: [],
+                                        multiSymbols: [{
+                                            content: symbolContent,
+                                            type: 'black',
+                                            index: j,
+                                            total: chars.length
+                                        }]
+                                    });
+                                }
+
+                                i = symbolEnd + 1;
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Check for single-character symbols
                     if (char === '[') {
                         // Found black symbol
                         const symbolEnd = text.indexOf(']', i);
                         if (symbolEnd !== -1) {
                             const symbolContent = text.substring(i + 1, symbolEnd);
-                            symbols.push({
-                                content: symbolContent,
-                                type: 'black'
-                            });
+
+                            // Add to the last character if exists
+                            if (result.length > 0) {
+                                result[result.length - 1].symbols.push({
+                                    content: symbolContent,
+                                    type: 'black'
+                                });
+                            }
+
                             i = symbolEnd + 1;
                             continue;
                         }
@@ -525,10 +714,15 @@
                         const symbolEnd = text.indexOf('›', i);
                         if (symbolEnd !== -1) {
                             const symbolContent = text.substring(i + 1, symbolEnd);
-                            symbols.push({
-                                content: symbolContent,
-                                type: 'red'
-                            });
+
+                            // Add to the last character if exists
+                            if (result.length > 0) {
+                                result[result.length - 1].symbols.push({
+                                    content: symbolContent,
+                                    type: 'red'
+                                });
+                            }
+
                             i = symbolEnd + 1;
                             continue;
                         }
@@ -537,38 +731,33 @@
                         const symbolEnd = text.indexOf('>', i);
                         if (symbolEnd !== -1) {
                             const symbolContent = text.substring(i + 1, symbolEnd);
-                            symbols.push({
-                                content: symbolContent,
-                                type: 'red'
-                            });
+
+                            // Add to the last character if exists
+                            if (result.length > 0) {
+                                result[result.length - 1].symbols.push({
+                                    content: symbolContent,
+                                    type: 'red'
+                                });
+                            }
+
                             i = symbolEnd + 1;
                             continue;
                         }
                     } else {
                         // Regular character
-                        if (currentChar) {
-                            result.push({
-                                char: currentChar,
-                                symbols: [...symbols]
-                            });
-                            symbols = [];
-                        }
-                        currentChar = char;
+                        result.push({
+                            char: char,
+                            symbols: [],
+                            multiSymbols: []
+                        });
                     }
-                    i++;
-                }
 
-                // Add last character
-                if (currentChar || symbols.length > 0) {
-                    result.push({
-                        char: currentChar,
-                        symbols: [...symbols]
-                    });
+                    i++;
                 }
 
                 return result;
             }
-
+            // Update preview function
             // Update preview function
             function updatePreview() {
                 const text = transcriptionText.value;
@@ -580,12 +769,22 @@
                 }
 
                 const parsed = parseTextWithSymbols(text);
+                const multiSymbols = [];
 
                 parsed.forEach((item, index) => {
+                    // Handle spaces differently
+                    if (item.isSpace) {
+                        const spaceSpan = document.createElement('span');
+                        spaceSpan.textContent = ' ';
+                        spaceSpan.style.marginRight = '0.25em'; // Add some spacing for spaces
+                        previewContent.appendChild(spaceSpan);
+                        return;
+                    }
+
                     const charContainer = document.createElement('span');
                     charContainer.classList.add('preview-char');
 
-                    // Add symbols (reversed so last symbol appears closest to text)
+                    // Add single-character symbols (reversed so last symbol appears closest to text)
                     const reversedSymbols = [...item.symbols].reverse();
 
                     reversedSymbols.forEach((symbol, symbolIndex) => {
@@ -603,6 +802,30 @@
                         charContainer.appendChild(symbolSpan);
                     });
 
+                    // Add multi-character symbols
+                    if (item.multiSymbols && item.multiSymbols.length > 0) {
+                        item.multiSymbols.forEach((multiSymbol, symbolIndex) => {
+                            // For the first character in the multi-symbol group, create the symbol element
+                            if (multiSymbol.index === 0) {
+                                const multiSymbolSpan = document.createElement('span');
+                                multiSymbolSpan.classList.add('preview-multi-symbol');
+                                multiSymbolSpan.classList.add(`preview-multi-${multiSymbol.type}`);
+                                multiSymbolSpan.textContent = multiSymbol.content;
+
+                                // Position the symbol to span the entire group
+                                multiSymbolSpan.style.left = '0';
+                                multiSymbolSpan.style.width = `${multiSymbol.total * 24}px`; // Approximate width
+
+                                charContainer.appendChild(multiSymbolSpan);
+                                multiSymbols.push({
+                                    element: multiSymbolSpan,
+                                    startIndex: index,
+                                    length: multiSymbol.total
+                                });
+                            }
+                        });
+                    }
+
                     // Add base character
                     const baseChar = document.createElement('span');
                     baseChar.classList.add('preview-base');
@@ -611,8 +834,27 @@
 
                     previewContent.appendChild(charContainer);
                 });
-            }
 
+                // Adjust positioning of multi-symbols after all characters are rendered
+                setTimeout(() => {
+                    multiSymbols.forEach(multiSymbol => {
+                        const startChar = previewContent.children[multiSymbol.startIndex];
+                        const endChar = previewContent.children[multiSymbol.startIndex + multiSymbol.length - 1];
+
+                        if (startChar && endChar) {
+                            const startRect = startChar.getBoundingClientRect();
+                            const endRect = endChar.getBoundingClientRect();
+                            const containerRect = previewContent.getBoundingClientRect();
+
+                            const left = startRect.left - containerRect.left;
+                            const width = endRect.right - startRect.left;
+
+                            multiSymbol.element.style.left = `${left}px`;
+                            multiSymbol.element.style.width = `${width}px`;
+                        }
+                    });
+                }, 0);
+            }
             // Add entry button functionality
             addEntryBtn.addEventListener('click', function() {
                 const startTime = parseFloat(startTimeInput.value);
